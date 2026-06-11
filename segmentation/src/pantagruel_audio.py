@@ -55,7 +55,7 @@ class PantagruelSpeechModel:
 
         diff = np.abs(np.diff(energy, prepend=energy[0]))
 
-        peaks, _ = find_peaks(diff, prominence=0.5, distance=5)
+        peaks, _ = find_peaks(diff, prominence=0.1, distance=5)
 
         times = peaks * (len(audio) / sr) / len(diff)
 
