@@ -1,0 +1,727 @@
+{
+  "model": "Pantagruel-B-Crs-MLM",
+  "accuracy": 0.6,
+  "n_examples": 65,
+  "n_correct": 39,
+  "label_counts": {
+    "True": 39,
+    "False": 26
+  },
+  "details": [
+    {
+      "story_id": 380,
+      "example_id": 1015,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 380,
+      "example_id": 1016,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 426,
+      "example_id": 1210,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 198,
+      "example_id": 563,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 0,
+      "example_id": 0,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 0,
+      "example_id": 1,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 20,
+      "example_id": 57,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 20,
+      "example_id": 59,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 282,
+      "example_id": 726,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 471,
+      "example_id": 1363,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 471,
+      "example_id": 1364,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 471,
+      "example_id": 1365,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 184,
+      "example_id": 530,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 184,
+      "example_id": 531,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 232,
+      "example_id": 657,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 452,
+      "example_id": 1302,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 452,
+      "example_id": 1303,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 340,
+      "example_id": 894,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 340,
+      "example_id": 895,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 96,
+      "example_id": 289,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 96,
+      "example_id": 291,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 219,
+      "example_id": 621,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 219,
+      "example_id": 622,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 219,
+      "example_id": 623,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 350,
+      "example_id": 928,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 350,
+      "example_id": 929,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 385,
+      "example_id": 1029,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 385,
+      "example_id": 1031,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 159,
+      "example_id": 456,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 343,
+      "example_id": 905,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 343,
+      "example_id": 906,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 213,
+      "example_id": 608,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 213,
+      "example_id": 610,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 79,
+      "example_id": 240,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 79,
+      "example_id": 241,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 2,
+      "example_id": 4,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 2,
+      "example_id": 6,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 442,
+      "example_id": 1272,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 442,
+      "example_id": 1273,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 234,
+      "example_id": 663,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 234,
+      "example_id": 665,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 120,
+      "example_id": 360,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 120,
+      "example_id": 361,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 322,
+      "example_id": 820,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 322,
+      "example_id": 821,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 83,
+      "example_id": 253,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 83,
+      "example_id": 254,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 368,
+      "example_id": 980,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 368,
+      "example_id": 981,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 319,
+      "example_id": 805,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 319,
+      "example_id": 806,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 319,
+      "example_id": 808,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 319,
+      "example_id": 809,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 306,
+      "example_id": 754,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 306,
+      "example_id": 755,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 245,
+      "example_id": 688,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 58,
+      "example_id": 171,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 58,
+      "example_id": 172,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 191,
+      "example_id": 546,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 191,
+      "example_id": 547,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 166,
+      "example_id": 476,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 166,
+      "example_id": 478,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 352,
+      "example_id": 934,
+      "true_label": "False",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": false
+    },
+    {
+      "story_id": 352,
+      "example_id": 935,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    },
+    {
+      "story_id": 472,
+      "example_id": 1367,
+      "true_label": "True",
+      "predicted_label": "True",
+      "scores": {
+        "True": -Infinity,
+        "False": -Infinity
+      },
+      "correct": true
+    }
+  ]
+}

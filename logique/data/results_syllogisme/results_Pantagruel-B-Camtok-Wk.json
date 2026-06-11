@@ -1,0 +1,727 @@
+{
+  "model": "Pantagruel-B-Camtok-Wk",
+  "accuracy": 0.4,
+  "n_examples": 65,
+  "n_correct": 26,
+  "label_counts": {
+    "True": 39,
+    "False": 26
+  },
+  "details": [
+    {
+      "story_id": 380,
+      "example_id": 1015,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.093256950378418,
+        "False": -9.755128860473633
+      },
+      "correct": false
+    },
+    {
+      "story_id": 380,
+      "example_id": 1016,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.24321174621582,
+        "False": -9.808795928955078
+      },
+      "correct": true
+    },
+    {
+      "story_id": 426,
+      "example_id": 1210,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.211633682250977,
+        "False": -9.646836280822754
+      },
+      "correct": false
+    },
+    {
+      "story_id": 198,
+      "example_id": 563,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.980232238769531,
+        "False": -9.816549301147461
+      },
+      "correct": false
+    },
+    {
+      "story_id": 0,
+      "example_id": 0,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.228401184082031,
+        "False": -9.723655700683594
+      },
+      "correct": false
+    },
+    {
+      "story_id": 0,
+      "example_id": 1,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.460296630859375,
+        "False": -9.854293823242188
+      },
+      "correct": true
+    },
+    {
+      "story_id": 20,
+      "example_id": 57,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.984253883361816,
+        "False": -10.2404146194458
+      },
+      "correct": false
+    },
+    {
+      "story_id": 20,
+      "example_id": 59,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.987198829650879,
+        "False": -10.048269271850586
+      },
+      "correct": true
+    },
+    {
+      "story_id": 282,
+      "example_id": 726,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.148014068603516,
+        "False": -10.14069652557373
+      },
+      "correct": false
+    },
+    {
+      "story_id": 471,
+      "example_id": 1363,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.299848556518555,
+        "False": -9.679360389709473
+      },
+      "correct": false
+    },
+    {
+      "story_id": 471,
+      "example_id": 1364,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.249496459960938,
+        "False": -9.854658126831055
+      },
+      "correct": false
+    },
+    {
+      "story_id": 471,
+      "example_id": 1365,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.29669189453125,
+        "False": -9.889090538024902
+      },
+      "correct": true
+    },
+    {
+      "story_id": 184,
+      "example_id": 530,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.882396697998047,
+        "False": -9.84223461151123
+      },
+      "correct": false
+    },
+    {
+      "story_id": 184,
+      "example_id": 531,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.147074699401855,
+        "False": -9.838973999023438
+      },
+      "correct": true
+    },
+    {
+      "story_id": 232,
+      "example_id": 657,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.307571411132812,
+        "False": -10.032238960266113
+      },
+      "correct": false
+    },
+    {
+      "story_id": 452,
+      "example_id": 1302,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.57989501953125,
+        "False": -9.957509994506836
+      },
+      "correct": false
+    },
+    {
+      "story_id": 452,
+      "example_id": 1303,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.564491271972656,
+        "False": -9.717930793762207
+      },
+      "correct": true
+    },
+    {
+      "story_id": 340,
+      "example_id": 894,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.253155708312988,
+        "False": -9.343172073364258
+      },
+      "correct": false
+    },
+    {
+      "story_id": 340,
+      "example_id": 895,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.539855003356934,
+        "False": -9.234862327575684
+      },
+      "correct": true
+    },
+    {
+      "story_id": 96,
+      "example_id": 289,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.896470069885254,
+        "False": -10.34530258178711
+      },
+      "correct": false
+    },
+    {
+      "story_id": 96,
+      "example_id": 291,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.1093168258667,
+        "False": -10.33245849609375
+      },
+      "correct": true
+    },
+    {
+      "story_id": 219,
+      "example_id": 621,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.252634048461914,
+        "False": -9.274178504943848
+      },
+      "correct": false
+    },
+    {
+      "story_id": 219,
+      "example_id": 622,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.355082511901855,
+        "False": -9.700279235839844
+      },
+      "correct": false
+    },
+    {
+      "story_id": 219,
+      "example_id": 623,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.501341819763184,
+        "False": -9.602737426757812
+      },
+      "correct": true
+    },
+    {
+      "story_id": 350,
+      "example_id": 928,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.34014892578125,
+        "False": -9.324257850646973
+      },
+      "correct": false
+    },
+    {
+      "story_id": 350,
+      "example_id": 929,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.325672149658203,
+        "False": -9.302894592285156
+      },
+      "correct": true
+    },
+    {
+      "story_id": 385,
+      "example_id": 1029,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.94774055480957,
+        "False": -9.702544212341309
+      },
+      "correct": false
+    },
+    {
+      "story_id": 385,
+      "example_id": 1031,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.685890197753906,
+        "False": -9.323448181152344
+      },
+      "correct": true
+    },
+    {
+      "story_id": 159,
+      "example_id": 456,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.825342178344727,
+        "False": -10.278664588928223
+      },
+      "correct": false
+    },
+    {
+      "story_id": 343,
+      "example_id": 905,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.184873580932617,
+        "False": -10.172224044799805
+      },
+      "correct": true
+    },
+    {
+      "story_id": 343,
+      "example_id": 906,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.336386680603027,
+        "False": -10.038897514343262
+      },
+      "correct": false
+    },
+    {
+      "story_id": 213,
+      "example_id": 608,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.067296028137207,
+        "False": -9.384944915771484
+      },
+      "correct": true
+    },
+    {
+      "story_id": 213,
+      "example_id": 610,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.271017074584961,
+        "False": -9.660655975341797
+      },
+      "correct": false
+    },
+    {
+      "story_id": 79,
+      "example_id": 240,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.016977310180664,
+        "False": -9.49753189086914
+      },
+      "correct": false
+    },
+    {
+      "story_id": 79,
+      "example_id": 241,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.012286186218262,
+        "False": -9.474349021911621
+      },
+      "correct": true
+    },
+    {
+      "story_id": 2,
+      "example_id": 4,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.363593101501465,
+        "False": -9.743328094482422
+      },
+      "correct": true
+    },
+    {
+      "story_id": 2,
+      "example_id": 6,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.364492416381836,
+        "False": -9.647276878356934
+      },
+      "correct": false
+    },
+    {
+      "story_id": 442,
+      "example_id": 1272,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.296708106994629,
+        "False": -9.512226104736328
+      },
+      "correct": true
+    },
+    {
+      "story_id": 442,
+      "example_id": 1273,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.254678726196289,
+        "False": -9.871635437011719
+      },
+      "correct": false
+    },
+    {
+      "story_id": 234,
+      "example_id": 663,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.199041366577148,
+        "False": -10.029559135437012
+      },
+      "correct": false
+    },
+    {
+      "story_id": 234,
+      "example_id": 665,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.111928939819336,
+        "False": -9.967029571533203
+      },
+      "correct": false
+    },
+    {
+      "story_id": 120,
+      "example_id": 360,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.706398010253906,
+        "False": -9.836810111999512
+      },
+      "correct": false
+    },
+    {
+      "story_id": 120,
+      "example_id": 361,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.674856185913086,
+        "False": -10.335899353027344
+      },
+      "correct": true
+    },
+    {
+      "story_id": 322,
+      "example_id": 820,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.031333923339844,
+        "False": -10.077001571655273
+      },
+      "correct": true
+    },
+    {
+      "story_id": 322,
+      "example_id": 821,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.074249267578125,
+        "False": -9.930262565612793
+      },
+      "correct": false
+    },
+    {
+      "story_id": 83,
+      "example_id": 253,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.794290542602539,
+        "False": -9.721589088439941
+      },
+      "correct": false
+    },
+    {
+      "story_id": 83,
+      "example_id": 254,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.214448928833008,
+        "False": -9.899284362792969
+      },
+      "correct": true
+    },
+    {
+      "story_id": 368,
+      "example_id": 980,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.717279434204102,
+        "False": -10.053678512573242
+      },
+      "correct": false
+    },
+    {
+      "story_id": 368,
+      "example_id": 981,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.634631156921387,
+        "False": -9.712363243103027
+      },
+      "correct": true
+    },
+    {
+      "story_id": 319,
+      "example_id": 805,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.983319282531738,
+        "False": -9.419492721557617
+      },
+      "correct": true
+    },
+    {
+      "story_id": 319,
+      "example_id": 806,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.148275375366211,
+        "False": -9.84288215637207
+      },
+      "correct": false
+    },
+    {
+      "story_id": 319,
+      "example_id": 808,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.907154083251953,
+        "False": -9.58587646484375
+      },
+      "correct": false
+    },
+    {
+      "story_id": 319,
+      "example_id": 809,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.74862003326416,
+        "False": -9.839997291564941
+      },
+      "correct": true
+    },
+    {
+      "story_id": 306,
+      "example_id": 754,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.792011260986328,
+        "False": -9.790717124938965
+      },
+      "correct": true
+    },
+    {
+      "story_id": 306,
+      "example_id": 755,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.65967845916748,
+        "False": -9.868021011352539
+      },
+      "correct": false
+    },
+    {
+      "story_id": 245,
+      "example_id": 688,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.25025749206543,
+        "False": -9.211920738220215
+      },
+      "correct": false
+    },
+    {
+      "story_id": 58,
+      "example_id": 171,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.293564796447754,
+        "False": -9.971817016601562
+      },
+      "correct": false
+    },
+    {
+      "story_id": 58,
+      "example_id": 172,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.164315223693848,
+        "False": -9.831457138061523
+      },
+      "correct": false
+    },
+    {
+      "story_id": 191,
+      "example_id": 546,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -10.856728553771973,
+        "False": -10.264459609985352
+      },
+      "correct": false
+    },
+    {
+      "story_id": 191,
+      "example_id": 547,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.24844741821289,
+        "False": -9.846827507019043
+      },
+      "correct": true
+    },
+    {
+      "story_id": 166,
+      "example_id": 476,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.111649513244629,
+        "False": -9.188596725463867
+      },
+      "correct": true
+    },
+    {
+      "story_id": 166,
+      "example_id": 478,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.139042854309082,
+        "False": -9.452492713928223
+      },
+      "correct": false
+    },
+    {
+      "story_id": 352,
+      "example_id": 934,
+      "true_label": "False",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.165873527526855,
+        "False": -9.882808685302734
+      },
+      "correct": true
+    },
+    {
+      "story_id": 352,
+      "example_id": 935,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.21131420135498,
+        "False": -9.551030158996582
+      },
+      "correct": false
+    },
+    {
+      "story_id": 472,
+      "example_id": 1367,
+      "true_label": "True",
+      "predicted_label": "False",
+      "scores": {
+        "True": -11.306118965148926,
+        "False": -10.049646377563477
+      },
+      "correct": false
+    }
+  ]
+}
