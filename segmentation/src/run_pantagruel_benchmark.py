@@ -5,6 +5,7 @@ from load_audio import load_audio
 from extract_features_v1 import extract_features
 from segmentation_prosodic_v1 import ProsodicSegmenter
 from pantagruel_audio import PantagruelSpeechModel 
+from leBenchmark_audio import LeBenchmarkSpeechModel
 from transformers import AutoModel, AutoProcessor
 import torch
 from scipy.signal import find_peaks
@@ -55,24 +56,43 @@ def main():
 
     baseline = ProsodicSegmenter()
 
-    models = {
-        "speech_base_1K": "PantagrueLLM/speech-base-1K",
-        "speech_base_14K": "PantagrueLLM/speech-base-14K",
-        "speech_large_14K": "PantagrueLLM/speech-large-14K",
-        "speech_large_114K": "PantagrueLLM/speech-large-114K"
+    models_pantagruel = {
+        "Pantagruel-B-1K": "PantagrueLLM/speech-base-1K",
+        "Pantagruel-B-14K": "PantagrueLLM/speech-base-14K",
+        "Pantagruel-L-14K": "PantagrueLLM/speech-large-14K",
+        "Pantagruel-L-114K": "PantagrueLLM/speech-large-114K"
+  #      "LeBenchmark-w2v-B-1k":"LeBenchmark/wav2vec2-FR-1K-base",
+ #       "LeBenchmark-w2v-L-7k":"LeBenchmark/wav2vec2-FR-7K-large",
+#        "LeBenchmark-w2v-L-14k":"LeBenchmark/wav2vec2-FR-14K-large" 
+    }
+
+
+#    base = Path("/home/getalp/trombatm/stage/segmentation/src")
+    models_lebenchmark  = {
+        "LeBenchmark-w2v-B-1k":"LeBenchmark/wav2vec2-FR-1K-base",
+        "LeBenchmark-w2v-L-7k":"LeBenchmark/wav2vec2-FR-7K-large"
+#        "LeBenchmark-w2v-L-14k": str(base/"lebenchmark-14K-large-hf")	
     }
 
     pantagruel_models = {
         name: PantagruelSpeechModel(path)
-        for name, path in models.items()
+        for name, path in models_pantagruel.items()
+    }
+    
+    lebenchmark_models = { 
+        name: LeBenchmarkSpeechModel(model_id)
+        for name, model_id in models_lebenchmark.items()
     }
 
     results = {
         "baseline": [],
-        "speech_base_1K": [],
-        "speech_base_14K": [],
-        "speech_large_14K": [],
-        "speech_large_114K": []
+        "Pantagruel-B-1K": [],
+        "Pantagruel-B-14K": [],
+        "Pantagruel-L-14K": [],
+        "Pantagruel-L-114K": [],
+        "LeBenchmark-w2v-B-1k":[],
+        "LeBenchmark-w2v-L-7k":[],
+        "LeBenchmark-w2v-L-14k":[]
     }
 
 
@@ -115,12 +135,18 @@ def main():
             except:
                 results[name].append(0)
 
-   
-    # FINAL RESULTS
-    print("\n==============================")
-    print("PANTAGRUEL SEGMENTATION BENCHMARK")
-    print("==============================\n")
+        for name , model in lebenchmark_models.items():
+            try :
+                times = model.detect_boundaries(audio,sr)
+                _,_, f1 = evaluate(times,gt)
+                results[name].append(f1)
+            except:
+                results[name].append(0)
 
+
+ 
+    # FINAL RESULTS
+    print("\nSEGMENTATION BENCHMARK RESULTS : \n")
     for k, v in results.items():
         print(f"{k:25s} : {np.mean(v):.4f}")
 
