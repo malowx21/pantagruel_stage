@@ -61,17 +61,11 @@ def main():
         "Pantagruel-B-14K": "PantagrueLLM/speech-base-14K",
         "Pantagruel-L-14K": "PantagrueLLM/speech-large-14K",
         "Pantagruel-L-114K": "PantagrueLLM/speech-large-114K"
-  #      "LeBenchmark-w2v-B-1k":"LeBenchmark/wav2vec2-FR-1K-base",
- #       "LeBenchmark-w2v-L-7k":"LeBenchmark/wav2vec2-FR-7K-large",
-#        "LeBenchmark-w2v-L-14k":"LeBenchmark/wav2vec2-FR-14K-large" 
     }
 
-
-#    base = Path("/home/getalp/trombatm/stage/segmentation/src")
     models_lebenchmark  = {
         "LeBenchmark-w2v-B-1k":"LeBenchmark/wav2vec2-FR-1K-base",
         "LeBenchmark-w2v-L-7k":"LeBenchmark/wav2vec2-FR-7K-large"
-#        "LeBenchmark-w2v-L-14k": str(base/"lebenchmark-14K-large-hf")	
     }
 
     pantagruel_models = {
