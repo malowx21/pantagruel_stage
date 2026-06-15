@@ -29,4 +29,3 @@ def extract_features(audio,sr):
 
 	return {'rms': rms, 'f0': f0, 'pause': pause}
 
-

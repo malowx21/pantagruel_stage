@@ -1,7 +1,6 @@
 from pathlib import Path
-from load_data import DataLoader 
-from load_audio import load_audio
-from extract_features import extract_features 
+from src.common.load_data import DataLoader 
+from src.common.load_audio import load_audio 
 import librosa 
 import parselmouth
 
