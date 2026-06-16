@@ -1,71 +1,64 @@
-import torch
+import torch 
 import torch.nn as nn
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
 
 class ProsodicSegmentationHead(nn.Module):
-
-    def __init__(
-        self,
-        input_dim: int,
-        conv_channels: int = 256,
-        lstm_hidden: int = 256,
-        lstm_layers: int = 2,
-        dropout: float = 0.2
-    ):
+    
+    def __init__(self,input_dim,conv_dim, dropout, lstm_hidden, nbr_lstm): # TODO try to add some config to a config file 
         super().__init__()
-
-        # normalization
+        
+        # Normalization layer 
         self.norm = nn.LayerNorm(input_dim)
-
-        # local temporal encoder
+        
+        # Convolution layer 
         self.conv = nn.Sequential(
-            nn.Conv1d(input_dim, conv_channels, kernel_size=5, padding=2),
+            nn.Conv1d(input_dim, conv_dim, kernel_size=5,padding=2),
+            nn.ReLU(),nn.Dropout(dropout),
+            nn.Conv1d(conv_dim, conv_dim, kernel_size=3, padding=1 ),
             nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Conv1d(conv_channels, conv_channels, kernel_size=3, padding=1),
-            nn.ReLU()
         )
+        
+        # LSTM layer
+        self.lstm = nn.LSTM(input_size=conv_dim, hidden_size=lstm_hidden , num_layers=nbr_lstm, batch_first= True, dropout=dropout if  nbr_lstm > 1 else 0, bidirectional=True )   
 
-        # sequence model
-        self.lstm = nn.LSTM(
-            input_size=conv_channels,
-            hidden_size=lstm_hidden,
-            num_layers=lstm_layers,
-            batch_first=True,
-            bidirectional=True,
-            dropout=dropout if lstm_layers > 1 else 0.0
-        )
-
-        lstm_out = lstm_hidden * 2
-
-        # classifier
+        # Classifier 
+        
+        lstm_out = lstm_hidden*2
         self.classifier = nn.Sequential(
-            nn.Linear(lstm_out, lstm_out // 2),
+            nn.Linear(lstm_out, lstm_hidden ),
             nn.ReLU(),
             nn.Dropout(dropout),
-            nn.Linear(lstm_out // 2, 1)
+            nn.Linear(lstm_hidden,1),
         )
+        
+    def forward(self, x, lengths):
+        """_summary_
 
-    def forward(self, x):
+        Args:
+            x (_type_): _description_
+            lengths (_type_): _description_
         """
-        x: (B, T, D)
-        returns: (B, T)
-        """
-
-        # LayerNorm
-        x = self.norm(x)
-
-        # Conv1D expects (B, D, T)
-        x = x.transpose(1, 2)
+        x = self.norm(x) 
+        x = x.transpose(1,2) # (B,D,T)
         x = self.conv(x)
+        x = x.transpose(1,2) # (B,D,T)
+        
+        if lengths is not None:
+            lengths_cpu = lengths.detach().cpu()
+            
+            packed = pack_padded_sequence(
+                x, lengths_cpu, batch_first=True, enforce_sorted=False
+            )
+            packed_out, _ = self.lstm(packed)
+            x, _ = pad_packed_sequence(
+                packed_out, batch_first=True, total_length=x.shape[1]
+            )
+        else:
+            x, _ = self.lstm(x)
 
-        # back to (B, T, D)
-        x = x.transpose(1, 2)
-
-        # BiLSTM temporal modeling
-        x, _ = self.lstm(x)
-
-        # classification
         logits = self.classifier(x).squeeze(-1)
-
         return logits
+        
+    
+        
