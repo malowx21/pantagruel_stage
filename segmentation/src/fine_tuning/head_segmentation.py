@@ -1,4 +1,3 @@
-import torch 
 import torch.nn as nn
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
@@ -8,7 +7,7 @@ class ProsodicSegmentationHead(nn.Module):
     def __init__(self,input_dim,conv_dim, dropout, lstm_hidden, nbr_lstm): # TODO try to add some config to a config file 
         super().__init__()
         
-        # Normalization layer 
+        # Normalization layer    
         self.norm = nn.LayerNorm(input_dim)
         
         # Convolution layer 
@@ -42,7 +41,7 @@ class ProsodicSegmentationHead(nn.Module):
         x = self.norm(x) 
         x = x.transpose(1,2) # (B,D,T)
         x = self.conv(x)
-        x = x.transpose(1,2) # (B,D,T)
+        x = x.transpose(1,2) # (B,T,D)
         
         if lengths is not None:
             lengths_cpu = lengths.detach().cpu()

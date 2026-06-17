@@ -39,7 +39,7 @@ class PantagruelAudioSegmenter:
 
         emb = self.extract_embeddings(audio, sr)
 
-        # convert embeddings → energy signal
+        # convert embeddings  energy signal
         energy = np.linalg.norm(emb, axis=1)
 
         # smoothing

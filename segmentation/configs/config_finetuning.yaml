@@ -1,0 +1,55 @@
+# Fine tuning configuration : head of prosodic segmentation  
+# Frozen encoder : Pantagruel-B-1K
+
+encoder:
+  name: "Pantagruel-B-1K"
+  model_id: "PantagrueLLM/speech-base-1K"
+  freeze: true
+  # dimension de sortie de last_hidden_state (à vérifier au premier run,
+  # affichée automatiquement par extract_embeddings.py)
+  hidden_dim: 768
+
+data:
+  common_voice_root: "data/raw/cv-corpus-25.0-2026-03-09/fr"
+  split_train: "train"
+  split_valid: "dev"
+  split_test: "test"
+  max_samples_train: null     # null = tout le split, sinon ex: 2000 pour debug
+  max_samples_valid: null
+  cache_dir: "data/cache"
+  sample_rate: 16000
+
+labels:
+  # méthode de génération des labels (voir src/finetune/generate_labels.py)
+  min_pause_duration: 0.25     # secondes, identique à ton script zero-shot
+  gaussian_sigma_frames: 1.5   # largeur de la gaussienne autour de chaque frontière
+  include_utterance_end: true  # ajouter une frontière à la fin de chaque phrase
+
+model:
+  conv_channels: 256
+  lstm_hidden: 256
+  lstm_layers: 2
+  dropout: 0.2
+
+training:
+  batch_size: 8
+  num_epochs: 30
+  learning_rate: 0.0003
+  weight_decay: 0.00001
+  loss: "bce_with_logits"      # "bce_with_logits" or "mse"
+  pos_weight: 5.0              # pour rééquilibrer si peu de frontières par séquence
+  early_stopping_patience: 5
+  grad_clip_norm: 1.0
+  num_workers: 2
+  device: "cuda"                # "cuda" or  "cpu"
+  seed: 42
+
+evaluation:
+  tolerance_sec: 0.25           # tolérance pour le F1, identique au benchmark zero-shot
+  peak_prominence: 0.1
+  peak_min_distance_sec: 0.2
+
+paths:
+  checkpoints_dir: "checkpoints"
+  logs_dir: "logs"
+  best_model_name: "best_segmentation_head.pt"

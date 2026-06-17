@@ -45,11 +45,10 @@ def boudaries_to_labels(boundaries_sec, num_frames, duration, sigma_frames):
     return labels
 
 
-def generate_labels(features,duration, num_frames):  #TODO add config file in common where i put all the configurations (for example min_pause_duration )
+def generate_labels(features,duration, num_frames, config):  #TODO add config file in common where i put all the configurations (for example min_pause_duration )
     """
     Pipeline 
     """
-    
-    boundaries= get_ground_truth(features, duration,min_pause_duration=0.25,include_utterance_end=True)
-    labels = boudaries_to_labels(boundaries, duration, num_frames, 1.5)
+    boundaries= get_ground_truth(features, duration,min_pause_duration=config["labels"]["min_pause_duration"],include_utterance_end=config["labels"]["include_utterance_end"])
+    labels = boudaries_to_labels(boundaries, duration, num_frames,sigma_frames=config['labels']['gaussian_sigma_frames'] )
     return labels 
