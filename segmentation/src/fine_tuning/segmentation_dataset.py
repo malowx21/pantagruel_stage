@@ -1,7 +1,7 @@
 import torch 
 from torch.utils.data import Dataset
 
-class SegmenatationData(Dataset):
+class SegmentationData(Dataset):
     """
     Dataset for prosodic segmentation
     
