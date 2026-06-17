@@ -14,7 +14,7 @@ data:
   split_train: "train"
   split_valid: "dev"
   split_test: "test"
-  max_samples_train: null     # null = tout le split, sinon ex: 2000 pour debug
+  max_samples_train: 10     # null = tout le split, sinon ex: 2000 pour debug
   max_samples_valid: null
   cache_dir: "data/cache"
   sample_rate: 16000

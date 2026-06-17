@@ -1,5 +1,7 @@
 """
-Extracting embeddings from the frozen encoder 
+Extracting embeddings from the frozen encoder
+
+python scripts/extract_embeddings.py --config configs/config_finetuning.yaml --split train 
 """
 
 import torch 
@@ -32,7 +34,7 @@ def extract(config , split, max_samples):
     
     embeddings, labels , durations = [],[],[]
     
-    for index , row  in df.itterows():
+    for index , row  in df.iterows():
     
         audio , sr = load_audio(row['path'])
         features = extract_features(audio= audio, sr=sr)
