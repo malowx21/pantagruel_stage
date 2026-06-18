@@ -34,19 +34,19 @@ def extract(config , split, max_samples):
     
     embeddings, labels , durations = [],[],[]
     
-    for index , row  in df.iterows():
+    for index , row  in df.iterrows():
     
         audio , sr = load_audio(row['path'])
         features = extract_features(audio= audio, sr=sr)
         duration = len(audio)/ sr 
         
         embedding  = encoder.encode(audio, sr)
-        num_frames = embedding[0]
+        num_frames = embedding.shape[0]
         label = generate_labels(features,duration,num_frames,config)
         
-        embeddings.append(torch.from_numpy(embedding))
-        labels.append(torch.from_numpy(label))
-        durations.append(torch.from_numpy(duration))
+        embeddings.append(torch.from_numpy(embedding).float())
+        labels.append(torch.from_numpy(label).float())
+        durations.append(duration)
     
     out_path = cache_dir / f"{config['encoder']['name']}_{split}.pt"
     torch.save({"embeddings": embeddings,"labels": labels,"durations": durations},out_path  )

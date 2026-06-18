@@ -21,7 +21,7 @@ def get_ground_truth(features, duration, min_pause_duration = 0.25, include_utte
     return sorted(gt)
 
 
-def boudaries_to_labels(boundaries_sec, num_frames, duration, sigma_frames):
+def boudaries_to_labels(boundaries_sec, num_frames,duration, sigma_frames):
     """
     Converts the list of boundaries to a continuous score for each frame
     """
@@ -50,5 +50,5 @@ def generate_labels(features,duration, num_frames, config):  #TODO add config fi
     Pipeline 
     """
     boundaries= get_ground_truth(features, duration,min_pause_duration=config["labels"]["min_pause_duration"],include_utterance_end=config["labels"]["include_utterance_end"])
-    labels = boudaries_to_labels(boundaries, duration, num_frames,sigma_frames=config['labels']['gaussian_sigma_frames'] )
+    labels = boudaries_to_labels(boundaries,num_frames,duration,sigma_frames=config['labels']['gaussian_sigma_frames'] )
     return labels 
