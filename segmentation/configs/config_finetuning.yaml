@@ -14,8 +14,8 @@ data:
   split_train: "train"
   split_valid: "dev"
   split_test: "test"
-  max_samples_train: 10     # null = tout le split, sinon ex: 2000 pour debug
-  max_samples_valid: null
+  max_samples_train: 2000     # null = tout le split, sinon ex: 2000 pour debug
+  max_samples_valid: 2000
   cache_dir: "data/cache"
   sample_rate: 16000
 
@@ -37,7 +37,7 @@ training:
   learning_rate: 0.0003
   weight_decay: 0.00001
   loss: "bce_with_logits"      # "bce_with_logits" or "mse"
-  pos_weight: 5.0              # pour rééquilibrer si peu de frontières par séquence
+  pos_weight: 1.0              # pour rééquilibrer si peu de frontières par séquence
   early_stopping_patience: 5
   grad_clip_norm: 1.0
   num_workers: 2

@@ -39,10 +39,10 @@ def boudaries_to_labels(boundaries_sec, num_frames,duration, sigma_frames):
     
     
     for b in boundaries_sec:
-        gauss =(1/(np.sqrt(2*np.pi)*sigma_frames)) * np.exp(-0.5*((frame_idx- (b* frames_per_sec)) / sigma_frames )**2 )
+        gauss =np.exp(-0.5*((frame_idx- (b* frames_per_sec)) / sigma_frames )**2 )
         labels = np.maximum(labels, gauss)
         
-    return labels
+    return np.clip(labels,0.0,1.0)
 
 
 def generate_labels(features,duration, num_frames, config):  #TODO add config file in common where i put all the configurations (for example min_pause_duration )

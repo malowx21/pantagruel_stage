@@ -89,7 +89,7 @@ def evaluate_f1(model,loader, device,eval_cfg):
         logits = model(embeddings, lengths).cpu().numpy()
         labels_np = labels.numpy()
         lengths_np = lengths.numpy()
-        durations_np = (durations.numpy if durations is not None
+        durations_np = (durations.numpy() if durations is not None
                                     else lengths_np.astype(np.float32)  # fallback 
         )
 
@@ -160,12 +160,11 @@ def main():
     
     
     model = ProsodicSegmentationHead(
-        input_dim=config["encoder"]["hidden_dim"],
-        conv_channels=config["model"]["conv_channels"],
-        lstm_hidden=config["model"]["lstm_hidden"],
-        lstm_layers=config["model"]["lstm_layers"],
-        dropout=config["model"]["dropout"],
-    ).to(device)
+        config["encoder"]["hidden_dim"],
+        config["model"]["conv_channels"],
+        config["model"]["dropout"],
+        config["model"]["lstm_hidden"],
+        config["model"]["lstm_layers"]).to(device)
 
     base_loss_fn = make_loss(config)
     if isinstance(base_loss_fn, nn.BCEWithLogitsLoss):

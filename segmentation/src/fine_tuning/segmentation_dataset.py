@@ -25,7 +25,7 @@ class SegmentationData(Dataset):
         
         embedding = self.embeddings[index].float()
         label = self.labels[index].float()
-        duration = self.duration[index]
+        duration = self.durations[index]
         return embedding , label, duration 
     
 
