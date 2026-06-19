@@ -61,7 +61,7 @@ def run_epoch(model, loader, base_loss_fn, optimizer, device, grad_clip, train: 
             labels = labels.to(device)
             
             logits= model(embeddings,lengths)
-            loss = mask_loss(base_loss_fn,logits,labels,lengths)
+            loss = mask_loss(base_loss_fn,labels,logits,lengths)
     
             if train :
                 optimizer.zero_grad()
@@ -216,14 +216,14 @@ def main():
                 },
                 best_path,
             )
-            print(f" new best model saved nouveau  ({best_path})")
+            print(f" new best model saved   ({best_path})")
         else:
             patience_counter += 1
             if patience_counter >= patience:
                 print(f"[train] early stopping in epoch {epoch}")
                 break
 
-    print(f"[train] end. best  valid_loss = {best_val_loss:.4f}")
+    print(f"[train] END . Best  valid_loss = {best_val_loss:.4f}")
 
 
 if __name__ == "__main__":
