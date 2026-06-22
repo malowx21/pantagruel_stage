@@ -12,8 +12,8 @@ data:
   split_train: "train"
   split_valid: "dev"
   split_test: "test"
-  max_samples_train: 5000
-  max_samples_valid: 1000
+  max_samples_train: 10000
+  max_samples_valid: 5000
   cache_dir: "data/cache"
   sample_rate: 16000
 
