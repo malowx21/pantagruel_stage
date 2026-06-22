@@ -39,19 +39,19 @@ checkpoints/                 # meilleurs modèles sauvegardés
 1. **Extraction des embeddings et labels** (une fois par split, mis en cache) :
 
 ```bash
-python scripts/extract_embeddings.py --config configs/config_finetuning.yaml --split train
-python scripts/extract_embeddings.py --config configs/config_finetuning.yaml --split valid
-python scripts/extract_embeddings.py --config configs/config_finetuning.yaml --split test
+python -m scripts.extract_embeddings --config configs/config_finetuning.yaml --split train
+python -m scripts.extract_embeddings --config configs/config_finetuning.yaml --split valid
+python -m scripts.extract_embeddings --config configs/config_finetuning.yaml --split test
 ```
 
    Ceci charge Common Voice, encode chaque audio avec Pantagruel-B-1K (gelé),
-   génère les labels continus (gaussiennes centrées sur les pauses détectées),
+   genere les labels continus (gaussiennes centrees sur les pauses detectees),
    et sauvegarde tout dans `data/cache/Pantagruel-B-1K_<split>.pt`.
 
 2. **Entraînement de la tête de segmentation** :
 
 ```bash
-python scripts/train.py --config configs/config_finetuning.yaml
+python -m scripts.train.py --config configs/config_finetuning.yaml
 ```
 
    Charge le cache, entraîne avec early stopping, sauvegarde le meilleur
