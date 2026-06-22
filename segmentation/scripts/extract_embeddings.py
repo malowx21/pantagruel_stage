@@ -1,7 +1,12 @@
 """
 Extracting embeddings from the frozen encoder
 
-python scripts/extract_embeddings.py --config configs/config_finetuning.yaml --split train 
+In the folder "segmentation" run :
+
+
+python -m scripts.extract_embeddings --config configs/config_finetuning.yaml --split train
+python -m scripts.extract_embeddings --config configs/config_finetuning.yaml --split valid
+python -m scripts.extract_embeddings --config configs/config_finetuning.yaml --split  test
 """
 
 import torch 
