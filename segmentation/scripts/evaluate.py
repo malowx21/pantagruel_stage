@@ -12,7 +12,7 @@ from pathlib import Path
 from scipy.signal import   find_peaks
 
 from src.common.config import load_config
-from src.fine_tuning.head_segmentation import ProsodicSegmentatioHead
+from src.fine_tuning.head_segmentation import ProsodicSegmentationHead
 from src.fine_tuning.segmentation_dataset import SegmentationData, collate_fn
 from src.fine_tuning.metrics import evaluate , logits_to_boundary_times
 
@@ -21,7 +21,7 @@ def main():
 
 	parser = ArgumentParser()
 	parser.add_argument("--config", type=str, default="configs/config_finetuning.yaml")
-	parser.add_argument("--checkpoint",type=str, default=None)
+#	parser.add_argument("--checkpoint",type=str, default=None)
 	args= parser.parse_args()
 	config = load_config(args.config)
 	device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -30,18 +30,18 @@ def main():
 	checkpoint = torch.load(checkpoint_path)
 
 	model = ProsodicSegmentationHead(
-		input_dim= config["encoder"]["hidden_dim"],
-		conv_channels= config["model"]["conv_channels"],
-		lstm_hidden= config["model"]["lstm_hidden"],
-		lstm_layers= config["model"]["lstm_layers"],
-		dropout= config["model"]["dropout"],
+		config["encoder"]["hidden_dim"],
+		config["model"]["conv_channels"],
+		config["model"]["dropout"],
+		config["model"]["lstm_hidden"],
+		config["model"]["lstm_layers"],
 		).to(device)
 
-	model.load_state_dict(checkpoint["model_state_dict"]
+	model.load_state_dict(checkpoint["model_state_dict"])
 	model.eval()
 
-	cache_dir = Path(config["data"]["cache_dir"]
-	test_file = cache_dir / f"{config["encoder"]["name"]}_test.pt"
+	cache_dir = Path(config["data"]["cache_dir"])
+	test_file = cache_dir / f"{config['encoder']['name']}_test.pt"
 	
 	if not test_file.exists():
 		raise FileNotFoundError("File not found, please run python -m  scripts.extract_embeddings --split test")
@@ -50,7 +50,7 @@ def main():
 	ds = SegmentationData(data["embeddings"],data["labels"],data["durations"])
 	test_loader = DataLoader(ds, batch_size= config["training"]["batch_size"],
 					num_workers= config["training"]["num_workers"],
-					collate_fn = collate_fn,suffle= False)
+					collate_fn = collate_fn,shuffle= False)
 
 
 	precision, recall , f1 = [], [], []
@@ -69,9 +69,9 @@ def main():
 			logit = logits[i,:t]
 			label = labels[i, :t]
 
-			pred = logits_to_boudary_times(logit,duration, prominence=config["evaluation"]["peak_prominence"],min_distance_sec = config["evaluation"]["peak_min_distance_sec"])
+			pred = logits_to_boundary_times(logit,duration, prominence=config["evaluation"]["peak_prominence"],min_distance_sec = config["evaluation"]["peak_min_distance_sec"])
 
-			ref,_ = find_peaks(label,prominence= config["evaluation"]["peak_prominence"], distance = config["evaluation"]["peak_min_distance_sec"])
+			ref,_ = find_peaks(label,height=0.5)
 			ref_time = (ref / max(t,1))*duration
 
 			results = evaluate(pred, ref_time.tolist(), tol = config["evaluation"]["tolerance_sec"])
@@ -83,9 +83,9 @@ def main():
 
 
 	print(" \n RESULTS OF THE EVALUATION ON THE TEST SET")
-	print(" Precision :", np.mean(precision))
-	print(" Recall :" , np.mean(recall))
-	print("F1_score: ", np.mean(f1))
+	print(f" Precision : {np.mean(precision):.4f}")
+	print(f" Recall : {np.mean(recall):.4f}")
+	print(f"F1_score:  {np.mean(f1):.4f}")
 
 
 if  __name__ == "__main__":
