@@ -24,7 +24,7 @@ from src.common.config import load_config
 
 
 
-def extract(config , split, max_samples):
+def extract(config , split, max_samples,model_id,name):
         
     data_dir = Path(config['data']['common_voice_root'])
     cache_dir  = Path(config['data']['cache_dir'])
@@ -35,7 +35,7 @@ def extract(config , split, max_samples):
     if max_samples is not None :
         df = df.head(max_samples)
         
-    encoder = PantagruelSpeechModel(config['encoder']['model_id'])
+    encoder = PantagruelSpeechModel(model_id)
     
     embeddings, labels , durations = [],[],[]
     
@@ -53,7 +53,7 @@ def extract(config , split, max_samples):
         labels.append(torch.from_numpy(label).float())
         durations.append(duration)
     
-    out_path = cache_dir / f"{config['encoder']['name']}_{split}.pt"
+    out_path = cache_dir / f"{name}_{split}_apa.pt"
     torch.save({"embeddings": embeddings,"labels": labels,"durations": durations},out_path  )
         
 def main():
@@ -78,7 +78,9 @@ def main():
     split_name = config['data'][split_key[args.split]]
     max_samples = config['data'].get(max_key[args.split])
     
-    extract(config, split=split_name,max_samples=max_samples)
+
+    for  i in range(len(config["encoder"]["model_id"])):
+        extract(config, split=split_name,max_samples=max_samples,model_id=config["encoder"]["model_id"][i], name=config["encoder"]["name"][i] )
     
 if __name__ =="__main__":
     main()

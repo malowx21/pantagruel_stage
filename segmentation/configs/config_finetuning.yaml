@@ -2,8 +2,8 @@
 # Frozen encoder : Pantagruel-B-1K
 
 encoder:
-  name: "Pantagruel-B-1K"
-  model_id: "PantagrueLLM/speech-base-1K"
+  name: ["Pantagruel-B-1K","Pantagruel-B-14K","Pantagruel-L-14K"]
+  model_id: ["PantagrueLLM/speech-base-1K","PantagrueLLM/speech-base-14K","PantagrueLLM/speech-large-14K"]
   freeze: true
   hidden_dim: 768
 
