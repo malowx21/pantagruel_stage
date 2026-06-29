@@ -53,7 +53,7 @@ def extract(config , split, max_samples,model_id,name):
         labels.append(torch.from_numpy(label).float())
         durations.append(duration)
     
-    out_path = cache_dir / f"{name}_{split}_apa.pt"
+    out_path = cache_dir / f"{name}_{split}.pt"
     torch.save({"embeddings": embeddings,"labels": labels,"durations": durations},out_path  )
         
 def main():

@@ -6,7 +6,7 @@ encoder:
   model_id: ["PantagrueLLM/speech-base-1K","PantagrueLLM/speech-base-14K","PantagrueLLM/speech-large-14K"]
   freeze: true
   hidden_dim: 768
-
+  hidden_dim_large: 1024
 data:
   common_voice_root: "data/raw/cv-corpus-25.0-2026-03-09/fr"
   split_train: "train"
@@ -49,4 +49,4 @@ evaluation:
 paths:
   checkpoints_dir: "checkpoints"
   logs_dir: "logs"
-  best_model_name: "best_segmentation_head.pt"
+  best_model_name: "best_segmentation_head"
