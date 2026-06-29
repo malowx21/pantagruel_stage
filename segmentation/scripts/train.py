@@ -129,7 +129,7 @@ def main():
     
     device = torch.device("cuda" if torch.cuda.is_available() else 'cpu')
     cache_dir  = Path(config['data']['cache_dir'])
-    for  i in range(len(config["encoder"]["name"])-1,len(config["encoder"]["name"])):
+    for  i in range(len(config["encoder"]["name"])):
         encoder_name = config['encoder']['name'][i]
     
     
