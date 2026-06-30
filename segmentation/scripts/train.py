@@ -31,6 +31,13 @@ def load_split(cache_dir, encoder_name, split):
     return data['embeddings'], data['labels'], data['durations']
 
 
+
+def infer_embedding_dim(embeddings):
+    if not embeddings:
+        raise ValueError("Cannot infer input dimension from an empty embedding cache")
+    return embeddings[0].shape[-1]
+
+
 def make_loss(config):
     loss = config['training']['loss']
     if loss == "bce_with_logits" :
@@ -122,6 +129,7 @@ def main():
     
     parser = ArgumentParser()
     parser.add_argument('--config', type=str ,default='configs/config_finetuning.yaml')
+#    parser.add_argument('--config',type=str, default='configs/configs_lebenchmark.yaml')
     args = parser.parse_args()
     
     config = load_config(args.config)
@@ -158,17 +166,12 @@ def main():
             collate_fn=collate_fn,
             num_workers=config["training"]["num_workers"],
          )
-    
-        if  i<2 :
-            model = ProsodicSegmentationHead(
-            config["encoder"]["hidden_dim"],
-            config["model"]["conv_channels"],
-            config["model"]["dropout"],
-            config["model"]["lstm_hidden"],
-            config["model"]["lstm_layers"]).to(device)
-        else : 
-            model = ProsodicSegmentationHead(
-            config["encoder"]["hidden_dim_large"],
+
+        input_dim = infer_embedding_dim(train_emb)
+
+ 
+        model = ProsodicSegmentationHead(
+            input_dim,
             config["model"]["conv_channels"],
             config["model"]["dropout"],
             config["model"]["lstm_hidden"],

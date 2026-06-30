@@ -17,6 +17,11 @@ from src.fine_tuning.segmentation_dataset import SegmentationData, collate_fn
 from src.fine_tuning.metrics import evaluate , logits_to_boundary_times
 
 
+def infer_embedding_dim(embeddings):
+	if not embeddings:
+		raise ValueError("Cannot infer input dimension from an empty embedding cache")
+	return embeddings[0].shape[-1]
+
 def main():
 
 	parser = ArgumentParser()
@@ -30,27 +35,7 @@ def main():
 		encoder_name = config["encoder"]["name"][i]
 		checkpoint_path = Path(config["paths"]["checkpoints_dir"])/ f"{config['paths']['best_model_name']}_{encoder_name}.pt"
 		checkpoint = torch.load(checkpoint_path)
-
-		if i < 2:
-			model = ProsodicSegmentationHead(
-				config["encoder"]["hidden_dim"],
-				config["model"]["conv_channels"],
-				config["model"]["dropout"],
-				config["model"]["lstm_hidden"],
-				config["model"]["lstm_layers"],
-				).to(device)
-		else : 
-			model = ProsodicSegmentationHead(
-				config["encoder"]["hidden_dim_large"],
-				config["model"]["conv_channels"],
-				config["model"]["dropout"],
-				config["model"]["lstm_hidden"],
-				config["model"]["lstm_layers"],
-				).to(device)
-			
-		model.load_state_dict(checkpoint["model_state_dict"])
-		model.eval()
-
+		
 		cache_dir = Path(config["data"]["cache_dir"])
 		test_file = cache_dir / f"{encoder_name}_test.pt"
 		
@@ -58,6 +43,17 @@ def main():
 			raise FileNotFoundError("File not found, please run python -m  scripts.extract_embeddings --split test")
 
 		data= torch.load(test_file)
+		model = ProsodicSegmentationHead(
+			infer_embedding_dim(data["embeddings"]),
+			config["model"]["conv_channels"],
+			config["model"]["dropout"],
+			config["model"]["lstm_hidden"],
+			config["model"]["lstm_layers"],
+		).to(device)
+		
+		model.load_state_dict(checkpoint["model_state_dict"])
+		model.eval()
+
 		ds = SegmentationData(data["embeddings"],data["labels"],data["durations"])
 		test_loader = DataLoader(ds, batch_size= config["training"]["batch_size"],
 						num_workers= config["training"]["num_workers"],

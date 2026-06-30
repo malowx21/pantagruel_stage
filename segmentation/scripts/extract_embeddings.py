@@ -18,10 +18,17 @@ from src.common.load_data import DataLoader
 from src.common.load_audio import load_audio
 from src.common.extract_features_v1 import extract_features
 from src.zero_shot.pantagruel_audio import PantagruelSpeechModel
+from src.zero_shot.leBenchmark_audio import LeBenchmarkSpeechModel
 from src.fine_tuning.generate_labels import generate_labels
 
 from src.common.config import load_config
 
+
+def load_encoder(model_id):
+    if model_id.startswith("LeBenchmark/"):
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        return LeBenchmarkSpeechModel(model_id, device=device)
+    return PantagruelSpeechModel(model_id)
 
 
 def extract(config , split, max_samples,model_id,name):
@@ -35,7 +42,7 @@ def extract(config , split, max_samples,model_id,name):
     if max_samples is not None :
         df = df.head(max_samples)
         
-    encoder = PantagruelSpeechModel(model_id)
+    encoder = load_encoder(model_id)
     
     embeddings, labels , durations = [],[],[]
     
@@ -48,7 +55,7 @@ def extract(config , split, max_samples,model_id,name):
         embedding  = encoder.encode(audio, sr)
         num_frames = embedding.shape[0]
         label = generate_labels(features,duration,num_frames,config)
-        
+
         embeddings.append(torch.from_numpy(embedding).float())
         labels.append(torch.from_numpy(label).float())
         durations.append(duration)
@@ -60,6 +67,7 @@ def main():
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--config', type=str, default='configs/config__finetuning.yaml')
+#    parser.add_argument('--config',type=str, default='configs/configs_lebenchmark.yaml')
     parser.add_argument('--split', type=str, choices=['train','valid','test'])
     args = parser.parse_args()
     config = load_config(args.config)
