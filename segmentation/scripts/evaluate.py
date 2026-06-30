@@ -72,7 +72,7 @@ def main():
 				logits= model(embeddings,lengths).cpu().numpy()
 				labels_np = labels.numpy()
 				lengths_np = lengths.numpy()
-				durations_np = (durations.numpy if durations is not None else lengths_np.astype(np.float32))
+				durations_np = durations.numpy() if durations is not None else lengths_np.astype(np.float32)
 
 			for i in range(embeddings.shape[0]):
 				t= int(lengths_np[i])
