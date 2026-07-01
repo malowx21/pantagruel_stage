@@ -66,8 +66,7 @@ def extract(config , split, max_samples,model_id,name):
 def main():
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('--config', type=str, default='configs/config__finetuning.yaml')
-#    parser.add_argument('--config',type=str, default='configs/configs_lebenchmark.yaml')
+    parser.add_argument('--config', type=str, default='configs/config_finetuning.yaml')
     parser.add_argument('--split', type=str, choices=['train','valid','test'])
     args = parser.parse_args()
     config = load_config(args.config)
