@@ -2,8 +2,4 @@ segmentation/data/raw/
 
 segmentation/src/.env
 
-segmentation/scripts/__pycache__
-
-segmentation/src/__pycache__
-segmentation/src/common/__pycache__
-segmentation/src/zero_shot/__pycache__
+**/__pycache__
