@@ -1,0 +1,10 @@
+torch
+transformers
+numpy
+scipy
+pandas
+librosa
+praat-parselmouth
+PyYAML
+python-dotenv
+datacollective
