@@ -70,23 +70,23 @@ def main():
 				lengths_np = lengths.numpy()
 				durations_np = durations.numpy() if durations is not None else lengths_np.astype(np.float32)
 
-			for i in range(embeddings.shape[0]):
-				t= int(lengths_np[i])
-				duration = float(durations_np[i])
-				logit = logits[i,:t]
-				label = labels_np[i, :t]
+				for i in range(embeddings.shape[0]):
+					t= int(lengths_np[i])
+					duration = float(durations_np[i])
+					logit = logits[i,:t]
+					label = labels_np[i, :t]
 
-				pred = logits_to_boundary_times(logit,duration, prominence=config["evaluation"]["peak_prominence"],min_distance_sec = config["evaluation"]["peak_min_distance_sec"])
+					pred = logits_to_boundary_times(logit,duration, prominence=config["evaluation"]["peak_prominence"],min_distance_sec = config["evaluation"]["peak_min_distance_sec"])
 
-				ref,_ = find_peaks(label,height=0.5)
-				ref_time = (ref / max(t,1))*duration
+					ref,_ = find_peaks(label,height=0.5)
+					ref_time = (ref / max(t,1))*duration
 
-				results = evaluate(pred, ref_time.tolist(), tol = config["evaluation"]["tolerance_sec"])
+					results = evaluate(pred, ref_time.tolist(), tol = config["evaluation"]["tolerance_sec"])
 
 
-				precision.append(results[0])
-				recall.append(results[1])
-				f1.append(results[2])
+					precision.append(results[0])
+					recall.append(results[1])
+					f1.append(results[2])
 
 
 		print(f" \n RESULTS OF THE EVALUATION ON THE TEST SET FOR MODEL {encoder_name}")
