@@ -1,5 +1,5 @@
 # Fine tuning configuration : head of prosodic segmentation  
-# Frozen encoder : Pantagruel-B-1K
+# Frozen encoders: ["Pantagruel-B-1K","Pantagruel-B-14K","Pantagruel-L-14K","LeBenchmark-w2v-B-1k","LeBenchmark-w2v-L-7k"]
 
 encoder:
   name: ["Pantagruel-B-1K","Pantagruel-B-14K","Pantagruel-L-14K","LeBenchmark-w2v-B-1k","LeBenchmark-w2v-L-7k"]
@@ -33,12 +33,12 @@ training:
   num_epochs: 30
   learning_rate: 0.0003
   weight_decay: 0.00001
-  loss: "bce_with_logits"      # "bce_with_logits" or "mse"
+  loss: "bce_with_logits"  # "bce_with_logits" or "mse"
   pos_weight: 1.0
   early_stopping_patience: 5
   grad_clip_norm: 1.0
   num_workers: 2
-  device: "cuda"                # "cuda" or  "cpu"
+  device: "cuda"  # "cuda" or  "cpu"
   seed: 42
 
 evaluation:

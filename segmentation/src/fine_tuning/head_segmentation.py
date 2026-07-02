@@ -32,12 +32,6 @@ class ProsodicSegmentationHead(nn.Module):
         )
         
     def forward(self, x, lengths):
-        """_summary_
-
-        Args:
-            x (_type_): _description_
-            lengths (_type_): _description_
-        """
         x = self.norm(x) 
         x = x.transpose(1,2) # (B,D,T)
         x = self.conv(x)

@@ -31,9 +31,6 @@ class SegmentationData(Dataset):
 
 def collate_fn(batch):
     
-    """
-    managing the padding dynamically 
-    """
     embeddings, labels, durations  = zip(*batch)
     
     l = torch.tensor([emb.shape[0] for emb in embeddings])

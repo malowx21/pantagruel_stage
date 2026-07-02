@@ -2,13 +2,14 @@ import numpy as np
 
 def get_ground_truth(features, duration, min_pause_duration = 0.25, include_utterance_end=True):
     """
-    Extracting boundaries (in seconds) from pauses detected in the feature extraction
+    Extracting boundaries  from pauses detected in the feature extraction
 
     Args:
+        feateures : dictionnary of all features, for instance ``pauses``
         duration : total duration of the audio 
         include_utterance_end : add a boundary at the end 
     Returns:
-        _type_: _description_
+        gt (list) : list of the discrete points of pauses 
     """
     gt = []
     for s, e in features["pauses"]:
@@ -24,6 +25,15 @@ def get_ground_truth(features, duration, min_pause_duration = 0.25, include_utte
 def boudaries_to_labels(boundaries_sec, num_frames,duration, sigma_frames):
     """
     Converts the list of boundaries to a continuous score for each frame
+
+    Args:
+        boundaries_sec : boundaaries in second
+        num_frames : total number of frames 
+        duration : the total duration  of the audio 
+        sigma_frames : standard deviation  
+
+    Returns:
+        Returns an np.ndarray of continuous labels after applying a normal distribution 
     """
     
     if num_frames ==0 : 
@@ -45,10 +55,8 @@ def boudaries_to_labels(boundaries_sec, num_frames,duration, sigma_frames):
     return np.clip(labels,0.0,1.0)
 
 
-def generate_labels(features,duration, num_frames, config):  #TODO add config file in common where i put all the configurations (for example min_pause_duration )
-    """
-    Pipeline 
-    """
+def generate_labels(features,duration, num_frames, config):  
+    
     boundaries= get_ground_truth(features, duration,min_pause_duration=config["labels"]["min_pause_duration"],include_utterance_end=config["labels"]["include_utterance_end"])
     labels = boudaries_to_labels(boundaries,num_frames,duration,sigma_frames=config['labels']['gaussian_sigma_frames'] )
     return labels 

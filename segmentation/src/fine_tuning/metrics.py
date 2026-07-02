@@ -5,15 +5,16 @@ from scipy.signal import find_peaks
 
 
 def evaluate(pred, ref, tol = 0.25):
-    """_summary_
+    """
+    Evaluate the different metrics by comparing the difference to a certain tolerance (tol)
 
     Args:
-        pred (_type_): _description_
-        ref (_type_): _description_
-        tol (float, optional): _description_. Defaults to 0.25.
+        pred : Predictions
+        ref : Real values 
+        tol : Tolerance of comparison . Defaults to 0.25.
 
     Returns:
-        _type_: _description_
+        Metrics precsion, recall and F1 score 
     """
     tp= 0
     matched = set()
@@ -35,16 +36,17 @@ def logits_to_boundary_times(logits,duration,
     prominence= 0.1,
     min_distance_sec= 0.2,
     ) :
-    """_summary_
+    """
+    Transforms the logits, results of the neural network to time boundaries so we can compare them to the real ones 
 
     Args:
-        logits (_type_): _description_
-        duration (_type_): _description_
-        prominence (float, optional): _description_. Defaults to 0.1.
-        min_distance_sec (float, optional): _description_. Defaults to 0.2.
+        logits : logits 
+        duration : The total duration of the audio
+        prominence : defaults to 0.1.
+        min_distance_sec : defaults to 0.2.
 
     Returns:
-        _type_: _description_
+        time stampes of the boundaries in second 
     """
     if len(logits) == 0:
         return []
