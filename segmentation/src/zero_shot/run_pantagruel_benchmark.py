@@ -25,11 +25,9 @@ def evaluate(pred, ref, tol=0.25):
 
     fp = len(pred) - tp
     fn = len(ref) - tp
-
     precision = tp / (tp + fp + 1e-8)
     recall = tp / (tp + fn + 1e-8)
     f1 = 2 * precision * recall / (precision + recall + 1e-8)
-
     return precision, recall, f1
 
 
@@ -46,9 +44,6 @@ def get_ground_truth(features, duration):
     return sorted(gt)
 
 
-
-
-# MAIN
 def main():
     path = Path(__file__).parent.parent.parent / 'data' / 'raw' / 'cv-corpus-25.0-2026-03-09' / 'fr'
     loader = DataLoader(path)
@@ -91,16 +86,12 @@ def main():
 
 
     for i, row in df.iterrows():
-
         audio, sr = load_audio(row["path"])
-
         features = extract_features(audio, sr)
-
         duration = len(audio) / sr
-
         gt = get_ground_truth(features, duration)
 
-        # BASELINE
+        
         try:
             _, times, _, _ = baseline.detect_boundaries(
                 features["rms"],
@@ -137,9 +128,6 @@ def main():
             except:
                 results[name].append(0)
 
-
- 
-    # FINAL RESULTS
     print("\nSEGMENTATION BENCHMARK RESULTS : \n")
     for k, v in results.items():
         print(f"{k:25s} : {np.mean(v):.4f}")

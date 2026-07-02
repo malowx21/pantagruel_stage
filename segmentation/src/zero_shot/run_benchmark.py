@@ -68,7 +68,7 @@ def main():
 
         duration = len(audio) / sr
 
-        # 🔥 NOUVEAU GROUND TRUTH
+    
         gt = []
 
         # 1. pauses longues = pseudo-boundaries
