@@ -5,6 +5,7 @@ import torch
 import time 
 import torch.nn as nn 
 import numpy as np
+import random
 
 from argparse import ArgumentParser
 
@@ -19,8 +20,26 @@ from src.fine_tuning.metrics import evaluate, logits_to_boundary_times
 from src.fine_tuning.head_segmentation import ProsodicSegmentationHead
 
 def set_seed(seed):
+    random.seed(seed)
     torch.manual_seed(seed)
     np.random.seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+
+def get_seeds(config, cli_seeds):
+    if cli_seeds:
+        return cli_seeds
+    if "seeds" in config["training"]:
+        return config["training"]["seeds"]
+    return [config["training"]["seed"]]
+
+
+def checkpoint_path(config, encoder_name, seed, multiple_seeds):
+    filename = f"{config['paths']['best_model_name']}_{encoder_name}"
+    if multiple_seeds:
+        filename = f"{filename}_seed{seed}"
+    return Path(config["paths"]["checkpoints_dir"]) / f"{filename}.pt"
     
     
 def load_split(cache_dir, encoder_name, split):
@@ -129,114 +148,123 @@ def main():
     
     parser = ArgumentParser()
     parser.add_argument('--config', type=str ,default='configs/config_finetuning.yaml')
+    parser.add_argument("--seeds", type=int, nargs="*", default=None)
 #    parser.add_argument('--config',type=str, default='configs/configs_lebenchmark.yaml')
     args = parser.parse_args()
     
     config = load_config(args.config)
-    set_seed(config["training"]["seed"])
+    seeds = get_seeds(config, args.seeds)
     
     device = torch.device("cuda" if torch.cuda.is_available() else 'cpu')
     cache_dir  = Path(config['data']['cache_dir'])
-    for  i in range(len(config["encoder"]["name"])):
-        encoder_name = config['encoder']['name'][i]
-    
-    
-        train_emb, train_lab, train_dur = load_split(
-            cache_dir, encoder_name, config["data"]["split_train"]
-        )
-        valid_emb, valid_lab, valid_dur = load_split(
-            cache_dir, encoder_name, config["data"]["split_valid"]
-         )
-    
-        train_ds = SegmentationData(train_emb, train_lab, train_dur)
-        valid_ds = SegmentationData(valid_emb, valid_lab, valid_dur)
-    
-    
-        train_loader = DataLoader(
-            train_ds,
-            batch_size=config["training"]["batch_size"],
-            shuffle=True,
-            collate_fn=collate_fn,
-            num_workers=config["training"]["num_workers"],
-          )
-        valid_loader = DataLoader(
-            valid_ds,
-            batch_size=config["training"]["batch_size"],
-            shuffle=False,
-            collate_fn=collate_fn,
-            num_workers=config["training"]["num_workers"],
-         )
+    multiple_seeds = len(seeds) > 1
+    for seed in seeds:
+        set_seed(seed)
+        print(f"\n START TRAINING seed={seed}")
 
-        input_dim = infer_embedding_dim(train_emb)
-
- 
-        model = ProsodicSegmentationHead(
-            input_dim,
-            config["model"]["conv_channels"],
-            config["model"]["dropout"],
-            config["model"]["lstm_hidden"],
-            config["model"]["lstm_layers"]).to(device)
-
-        base_loss_fn = make_loss(config)
-        if isinstance(base_loss_fn, nn.BCEWithLogitsLoss):
-            base_loss_fn.pos_weight = base_loss_fn.pos_weight.to(device)
-
-        optimizer = torch.optim.AdamW(
-            model.parameters(),
-            lr=config["training"]["learning_rate"],
-            weight_decay=config["training"]["weight_decay"],
-         )
-
-        checkpoints_dir = Path(config["paths"]["checkpoints_dir"])
-        checkpoints_dir.mkdir(parents=True, exist_ok=True)
-        best_path = checkpoints_dir / f"{config['paths']['best_model_name']}_{encoder_name}.pt"
-
-        best_val_loss = float("inf")
-        patience = config["training"]["early_stopping_patience"]
-        patience_counter = 0
-
-        for epoch in range(1, config["training"]["num_epochs"] + 1):
-            t0 = time.time()
-
-            train_loss = run_epoch(
-            model, train_loader, base_loss_fn, optimizer, device,
-            config["training"]["grad_clip_norm"], train=True,
+        for  i in range(len(config["encoder"]["name"])):
+            encoder_name = config['encoder']['name'][i]
+        
+        
+            train_emb, train_lab, train_dur = load_split(
+                cache_dir, encoder_name, config["data"]["split_train"]
             )
-            valid_loss = run_epoch(
-                model, valid_loader, base_loss_fn, optimizer, device,
-                config["training"]["grad_clip_norm"], train=False,
-               )
-            valid_f1 = evaluate_f1(model, valid_loader, device, config["evaluation"])
+            valid_emb, valid_lab, valid_dur = load_split(
+                cache_dir, encoder_name, config["data"]["split_valid"]
+             )
+        
+            train_ds = SegmentationData(train_emb, train_lab, train_dur)
+            valid_ds = SegmentationData(valid_emb, valid_lab, valid_dur)
+        
+            generator = torch.Generator()
+            generator.manual_seed(seed)
+        
+            train_loader = DataLoader(
+                train_ds,
+                batch_size=config["training"]["batch_size"],
+                shuffle=True,
+                collate_fn=collate_fn,
+                num_workers=config["training"]["num_workers"],
+                generator=generator,
+              )
+            valid_loader = DataLoader(
+                valid_ds,
+                batch_size=config["training"]["batch_size"],
+                shuffle=False,
+                collate_fn=collate_fn,
+                num_workers=config["training"]["num_workers"],
+             )
 
-            dt = time.time() - t0
-            print(
-            f"[model {encoder_name}  epoch {epoch:03d}] train_loss={train_loss:.4f} "
-            f"valid_loss={valid_loss:.4f} valid_f1={valid_f1:.4f} ({dt:.1f}s)"
-            )
+            input_dim = infer_embedding_dim(train_emb)
 
-            if valid_loss < best_val_loss:
-                best_val_loss = valid_loss
-                patience_counter = 0
-                torch.save(
-                {
-                    "model_state_dict": model.state_dict(),
-                    "config": config,
-                    "epoch": epoch,
-                    "valid_loss": valid_loss,
-                    "valid_f1": valid_f1,
-                },
-                best_path,
+     
+            model = ProsodicSegmentationHead(
+                input_dim,
+                config["model"]["conv_channels"],
+                config["model"]["dropout"],
+                config["model"]["lstm_hidden"],
+                config["model"]["lstm_layers"]).to(device)
+
+            base_loss_fn = make_loss(config)
+            if isinstance(base_loss_fn, nn.BCEWithLogitsLoss):
+                base_loss_fn.pos_weight = base_loss_fn.pos_weight.to(device)
+
+            optimizer = torch.optim.AdamW(
+                model.parameters(),
+                lr=config["training"]["learning_rate"],
+                weight_decay=config["training"]["weight_decay"],
+             )
+
+            checkpoints_dir = Path(config["paths"]["checkpoints_dir"])
+            checkpoints_dir.mkdir(parents=True, exist_ok=True)
+            best_path = checkpoint_path(config, encoder_name, seed, multiple_seeds)
+
+            best_val_loss = float("inf")
+            patience = config["training"]["early_stopping_patience"]
+            patience_counter = 0
+
+            for epoch in range(1, config["training"]["num_epochs"] + 1):
+                t0 = time.time()
+
+                train_loss = run_epoch(
+                model, train_loader, base_loss_fn, optimizer, device,
+                config["training"]["grad_clip_norm"], train=True,
                 )
-                print(f" new best model saved   ({best_path})")
-            else:
-                patience_counter += 1
-                if patience_counter >= patience:
-                    print(f"[train] early stopping in epoch {epoch}")
-                    break
+                valid_loss = run_epoch(
+                    model, valid_loader, base_loss_fn, optimizer, device,
+                    config["training"]["grad_clip_norm"], train=False,
+                   )
+                valid_f1 = evaluate_f1(model, valid_loader, device, config["evaluation"])
 
-        print(f"[train] END . Best  valid_loss = {best_val_loss:.4f} for model {encoder_name}")
+                dt = time.time() - t0
+                print(
+                f"[seed {seed} model {encoder_name} epoch {epoch:03d}] train_loss={train_loss:.4f} "
+                f"valid_loss={valid_loss:.4f} valid_f1={valid_f1:.4f} ({dt:.1f}s)"
+                )
+
+                if valid_loss < best_val_loss:
+                    best_val_loss = valid_loss
+                    patience_counter = 0
+                    torch.save(
+                    {
+                        "model_state_dict": model.state_dict(),
+                        "config": config,
+                        "seed": seed,
+                        "epoch": epoch,
+                        "valid_loss": valid_loss,
+                        "valid_f1": valid_f1,
+                    },
+                    best_path,
+                    )
+                    print(f" new best model saved   ({best_path})")
+                else:
+                    patience_counter += 1
+                    if patience_counter >= patience:
+                        print(f"[train] early stopping in epoch {epoch}")
+                        break
+
+            print(f"TRAINING END  seed={seed}. Best valid_loss = {best_val_loss:.4f} for model {encoder_name}")
 
 
 if __name__ == "__main__":
     main()
-

@@ -40,6 +40,7 @@ training:
   num_workers: 2
   device: "cuda"  # "cuda" or  "cpu"
   seed: 42
+  seeds: [42, 123, 2024] # seeds maybe add more seeds 
 
 evaluation:
   tolerance_sec: 0.25

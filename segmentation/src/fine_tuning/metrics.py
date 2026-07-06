@@ -3,6 +3,31 @@ from scipy.signal import find_peaks
 
 
 
+def match_boundaries(pred, ref, tol=0.25):
+    """
+    Match predicted boundaries to reference boundaries within a tolerance.
+    """
+    tp = []
+    fp = []
+    matched_ref = set()
+
+    for p in pred:
+        match_idx = None
+        for i, r in enumerate(ref):
+            if i not in matched_ref and abs(p - r) <= tol:
+                match_idx = i
+                break
+
+        if match_idx is None:
+            fp.append(p)
+        else:
+            matched_ref.add(match_idx)
+            tp.append((p, ref[match_idx]))
+
+    fn = [r for i, r in enumerate(ref) if i not in matched_ref]
+    return tp, fp, fn
+
+
 
 def evaluate(pred, ref, tol = 0.25):
     """
@@ -16,17 +41,10 @@ def evaluate(pred, ref, tol = 0.25):
     Returns:
         Metrics precsion, recall and F1 score 
     """
-    tp= 0
-    matched = set()
-
-    for p in pred : 
-        for i, r in enumerate(ref):
-            if i not in matched and abs(p-r) <= tol:
-                matched.add(i)
-                tp+=1
-                break
-    fp = len(pred)-tp
-    fn = len(ref)-tp
+    tp_matches, fp_times, fn_times = match_boundaries(pred, ref, tol=tol)
+    tp = len(tp_matches)
+    fp = len(fp_times)
+    fn = len(fn_times)
     precision = tp / (tp + fp + 1e-8)
     recall = tp / (tp + fn + 1e-8)
     f1 = 2 * precision * recall / (precision + recall + 1e-8)
@@ -59,5 +77,4 @@ def logits_to_boundary_times(logits,duration,
     peaks, _ = find_peaks(probs, prominence=prominence, distance=distance_frames) #peaks include the frame indexes of the peaks 
     times = peaks / frames_per_sec 
     return times.tolist()
-
 
