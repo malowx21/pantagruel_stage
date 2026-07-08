@@ -61,7 +61,7 @@ def json_list(values):
 @torch.no_grad()
 def analyze_examples(config, model, data, device):
     rows = []
-    paths = data.get("paths", [None] * len(data["embeddings"]))
+#    paths = data.get("paths", [None] * len(data["embeddings"]))
     tolerance = config["evaluation"]["tolerance_sec"]
 
     for idx, (embedding, label, duration) in enumerate(
@@ -92,7 +92,7 @@ def analyze_examples(config, model, data, device):
         rows.append(
             {
                 "sample_index": idx,
-                "audio_path": paths[idx] if idx < len(paths) else "",
+              #  "audio_path": paths[idx] if idx < len(paths) else "",
                 "duration": duration,
                 "precision": precision,
                 "recall": recall,
@@ -120,7 +120,7 @@ def write_csv(rows, output_path):
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = [
         "sample_index",
-        "audio_path",
+     #   "audio_path",
         "duration",
         "precision",
         "recall",
@@ -168,9 +168,7 @@ def main():
     output_path = (
         Path(args.output)
         if args.output is not None
-        else Path("reports")
-        / "error_analysis"
-        / f"{args.encoder}_{args.split}_errors.csv"
+        else Path("error_analysis")  / f"{args.encoder}_{args.split}_errors.csv"
     )
     write_csv(rows, output_path)
 
@@ -181,7 +179,7 @@ def main():
     for row in rows[:10]:
         print(
             f"  idx={row['sample_index']} f1={row['f1']:.4f} "
-            f"fp={row['n_fp']} fn={row['n_fn']} path={row['audio_path']}"
+            f"fp={row['n_fp']} fn={row['n_fn'] }"
         )
 
 
