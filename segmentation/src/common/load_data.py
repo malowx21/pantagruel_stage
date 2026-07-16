@@ -17,7 +17,7 @@ class  DataLoader:
 class RhapsodieDataLoader:
 
 	def __init__(self,audio_path , annotations_path): 
-		self.audio_path = Path(audio_dir)
+		self.audio_path = Path(audio_path)
 		self.annotations_path = Path(annotations_path)
 
 	def load_data(self) :
