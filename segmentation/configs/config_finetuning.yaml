@@ -52,11 +52,16 @@ paths:
   logs_dir: "logs"
   best_model_name: "best_segmentation_head"
 
+
+
 rhapsodie:
   audio_dir: "data/raw/Rhap-corpus/sound_mp3"
+  audio_ext: "mp3"
   annotations_dir: "data/raw/Rhap-corpus/proso_textgrids/TextGrids-fev2013"
-  tier_name: "IU"                                 # A CONFIRMER avec list_tiers()
+  tier_name: "periode"
   include_utterance_end: true
+  boundary_convention: "pause_midpoint"       
+  min_pause_duration: 0.25                        
 
 evaluation:
-  prominence_sweep: [0.05, 0.1, 0.15, 0.2, 0.3, 0.4]
+  prominence_sweep: [0.05, 0.1, 0.15, 0.2, 0.3, 0.4]  

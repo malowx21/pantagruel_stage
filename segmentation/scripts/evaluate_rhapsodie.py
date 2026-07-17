@@ -29,7 +29,7 @@ from src.common.config import load_config
 from src.fine_tuning.head_segmentation import ProsodicSegmentationHead
 from src.fine_tuning.segmentation_dataset import SegmentationData, collate_fn
 from src.fine_tuning.metrics import evaluate, logits_to_boundary_times
-from src.fine_tuning.metrics_rhapsodie_additions import (
+from src.fine_tuning.metrics import (
     sweep_peak_prominence,
     purity_coverage,
     bootstrap_f1_ci,

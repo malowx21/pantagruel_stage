@@ -7,13 +7,16 @@ Run in the directory "segmentation" :
 python -m scripts.extract_embeddings_rhapsodie --config configs/config_finetuning.yaml
 """
 
+
 import torch
 import argparse
 from pathlib import Path
 
 from src.common.load_data import RhapsodieDataLoader
 from src.common.load_audio import load_audio
-from src.common.load_annotations_rhap import get_ground_truth_rhapsodie
+from src.common.load_annotations_rhap import (get_ground_truth_rhapsodie,
+    get_ground_truth_rhapsodie_pause_midpoint,
+)
 from src.fine_tuning.generate_labels import boudaries_to_labels
 from src.zero_shot.pantagruel_audio import PantagruelSpeechModel
 from src.zero_shot.leBenchmark_audio import LeBenchmarkSpeechModel
@@ -27,6 +30,26 @@ def load_encoder(model_id):
     return PantagruelSpeechModel(model_id)
 
 
+def get_boundaries(row, duration, rha_cfg):
+    convention = rha_cfg.get("boundary_convention", "pause_midpoint")
+    if convention == "pause_midpoint":
+        return get_ground_truth_rhapsodie_pause_midpoint(
+            row["textgrid_path"],
+            tier_name=rha_cfg["tier_name"],
+            duration=duration,
+            include_utterance_end=rha_cfg.get("include_utterance_end", True),
+            min_pause_duration=rha_cfg.get("min_pause_duration", 0.0),
+        )
+    elif convention == "period_end":
+        return get_ground_truth_rhapsodie(
+            row["textgrid_path"],
+            tier_name=rha_cfg["tier_name"],
+            duration=duration,
+            include_utterance_end=rha_cfg.get("include_utterance_end", True),
+        )
+    raise ValueError(f"boundary_convention inconnue : {convention}")
+
+
 def extract(config, model_id, name):
     rha_cfg = config["rhapsodie"]
 
@@ -36,17 +59,14 @@ def extract(config, model_id, name):
     )
     df = loader.load_data()
     if len(df) == 0:
-        raise RuntimeError(
-            "Aucune paire audio/TextGrid trouvée -- vérifier "
-            "rhapsodie.audio_dir et rhapsodie.annotations_dir dans le config."
-        )
+        raise RuntimeError("")
 
     cache_dir = Path(config["data"]["cache_dir"]) / "rhapsodie"
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     encoder = load_encoder(model_id)
 
-    embeddings, labels, durations, file_ids= [], [], [], []
+    embeddings, labels, durations, file_ids = [], [], [], []
 
     for _, row in df.iterrows():
         audio, sr = load_audio(row["path"])
@@ -55,12 +75,7 @@ def extract(config, model_id, name):
         embedding = encoder.encode(audio, sr)
         num_frames = embedding.shape[0]
 
-        boundaries = get_ground_truth_rhapsodie(
-            row["textgrid_path"],
-            tier_name=rha_cfg["tier_name"],
-            duration=duration,
-            include_utterance_end=rha_cfg.get("include_utterance_end", True),
-        )
+        boundaries = get_boundaries(row, duration, rha_cfg)
         label = boudaries_to_labels(
             boundaries,
             num_frames,
@@ -72,6 +87,7 @@ def extract(config, model_id, name):
         labels.append(torch.from_numpy(label).float())
         durations.append(duration)
         file_ids.append(row["file_id"])
+        
 
     out_path = cache_dir / f"{name}_rhapsodie.pt"
     torch.save(
@@ -83,6 +99,7 @@ def extract(config, model_id, name):
         },
         out_path,
     )
+    print(f"Cache Rhapsodie ({len(embeddings)} files) / output path : {out_path}")
 
 
 def main():
@@ -101,4 +118,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
