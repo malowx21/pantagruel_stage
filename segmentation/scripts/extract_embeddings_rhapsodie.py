@@ -54,8 +54,8 @@ def extract(config, model_id, name):
     rha_cfg = config["rhapsodie"]
 
     loader = RhapsodieDataLoader(
-        audio_dir=rha_cfg["audio_dir"],
-        annotations_dir=rha_cfg["annotations_dir"],
+        audio_path=rha_cfg["audio_dir"],
+        annotations_path=rha_cfg["annotations_dir"],
     )
     df = loader.load_data()
     if len(df) == 0:
