@@ -24,7 +24,7 @@ class RhapsodieDataLoader:
 		row = []
 		for  file_path in sorted(self.audio_path.glob("*.mp3")):
 			file_id = file_path.stem
-			textgrid_path = self.annotations_path  / f"{file_id}.TextGrid"
+			textgrid_path = self.annotations_path  / f"{file_id}-Pro.TextGrid"
 		
 			row.append({"path": str(file_path),
 			    "textgrid_path" : str(textgrid_path),
