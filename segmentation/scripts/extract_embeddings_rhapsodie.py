@@ -12,9 +12,11 @@ import torch
 import argparse
 from pathlib import Path
 
+from src.common.chunked_encoding import encode_long_audio
 from src.common.load_data import RhapsodieDataLoader
 from src.common.load_audio import load_audio
-from src.common.load_annotations_rhap import (get_ground_truth_rhapsodie,
+from src.common.load_annotations_rhap import (
+    get_ground_truth_rhapsodie,
     get_ground_truth_rhapsodie_pause_midpoint,
 )
 from src.fine_tuning.generate_labels import boudaries_to_labels
@@ -59,20 +61,27 @@ def extract(config, model_id, name):
     )
     df = loader.load_data()
     if len(df) == 0:
-        raise RuntimeError("")
+        raise RuntimeError(
+            "Aucune paire audio/TextGrid trouvée -- vérifier "
+            "rhapsodie.audio_dir et rhapsodie.annotations_dir dans le config."
+        )
 
     cache_dir = Path(config["data"]["cache_dir"]) / "rhapsodie"
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     encoder = load_encoder(model_id)
 
-    embeddings, labels, durations, file_ids = [], [], [], []
+    embeddings, labels, durations, file_ids= [], [], [], []
 
     for _, row in df.iterrows():
         audio, sr = load_audio(row["path"])
         duration = len(audio) / sr
 
-        embedding = encoder.encode(audio, sr)
+        embedding = encode_long_audio(
+            encoder, audio, sr,
+            chunk_sec=rha_cfg.get("chunk_sec", 30.0),
+            step_sec=rha_cfg.get("step_sec", 15.0),
+        )
         num_frames = embedding.shape[0]
 
         boundaries = get_boundaries(row, duration, rha_cfg)
@@ -87,7 +96,7 @@ def extract(config, model_id, name):
         labels.append(torch.from_numpy(label).float())
         durations.append(duration)
         file_ids.append(row["file_id"])
-        
+    
 
     out_path = cache_dir / f"{name}_rhapsodie.pt"
     torch.save(
@@ -99,7 +108,7 @@ def extract(config, model_id, name):
         },
         out_path,
     )
-    print(f"Cache Rhapsodie ({len(embeddings)} files) / output path : {out_path}")
+    print(f"Cache Rhapsodie ({len(embeddings)} fichiers) -> {out_path}")
 
 
 def main():
