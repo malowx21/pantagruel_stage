@@ -46,6 +46,7 @@ evaluation:
   tolerance_sec: 0.25
   peak_prominence: 0.1
   peak_min_distance_sec: 0.2
+  prominence_sweep: [0.05, 0.1, 0.15, 0.2, 0.3, 0.4]
 
 paths:
   checkpoints_dir: "checkpoints"
@@ -63,5 +64,3 @@ rhapsodie:
   boundary_convention: "pause_midpoint"       
   min_pause_duration: 0.25                        
 
-evaluation:
-  prominence_sweep: [0.05, 0.1, 0.15, 0.2, 0.3, 0.4]  
