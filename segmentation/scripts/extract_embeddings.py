@@ -19,6 +19,7 @@ from src.common.load_audio import load_audio
 from src.common.extract_features_v1 import extract_features
 from src.zero_shot.pantagruel_audio import PantagruelSpeechModel
 from src.zero_shot.leBenchmark_audio import LeBenchmarkSpeechModel
+from src.zero_shot.pantagruel_audio_text import PantagruelSpeechTextAudioModel
 from src.fine_tuning.generate_labels import generate_labels
 
 from src.common.config import load_config
@@ -28,6 +29,8 @@ def load_encoder(model_id):
     if model_id.startswith("LeBenchmark/"):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         return LeBenchmarkSpeechModel(model_id, device=device)
+    if model_id.startswith("PantagrueLLM/Speech_Text"):
+        return PantagruelSpeechTextAudioModel(model_id)
     return PantagruelSpeechModel(model_id)
 
 
