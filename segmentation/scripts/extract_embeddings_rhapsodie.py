@@ -42,7 +42,7 @@ def get_boundaries(row, duration, rha_cfg):
             duration=duration,
             include_utterance_end=rha_cfg.get("include_utterance_end", True),
         )
-    raise ValueError(f"boundary_convention inconnue : {convention}")
+    raise ValueError(f"boundary_convention unknown : {convention}")
 
 
 def extract(config, model_id, name):
@@ -55,8 +55,8 @@ def extract(config, model_id, name):
     df = loader.load_data()
     if len(df) == 0:
         raise RuntimeError(
-            "Aucune paire audio/TextGrid trouvée -- vérifier "
-            "rhapsodie.audio_dir et rhapsodie.annotations_dir dans le config."
+            "No pair audio/TextGrid foung -- verify "
+            "rhapsodie.audio_dir andn rhapsodie.annotations_dir in the config."
         )
 
     cache_dir = Path(config["data"]["cache_dir"]) / "rhapsodie"
