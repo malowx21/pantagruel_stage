@@ -1,34 +1,27 @@
-"""
-Embedding extraction : reading the annotations from TextGri>
-used for common Voice dataset . The files in cache have sam>
-
-Run in the directory "segmentation" :
-
-python -m scripts.extract_embeddings_rhapsodie --config configs/config_finetuning.yaml
-"""
-
-
-import torch
 import argparse
 from pathlib import Path
+import torch
 
 from src.common.chunked_encoding import encode_long_audio
-from src.common.load_data import RhapsodieDataLoader
-from src.common.load_audio import load_audio
+from src.common.config import load_config
 from src.common.load_annotations_rhap import (
     get_ground_truth_rhapsodie,
     get_ground_truth_rhapsodie_pause_midpoint,
 )
+from src.common.load_audio import load_audio
+from src.common.load_data import RhapsodieDataLoader
 from src.fine_tuning.generate_labels import boudaries_to_labels
-from src.zero_shot.pantagruel_audio import PantagruelSpeechModel
 from src.zero_shot.leBenchmark_audio import LeBenchmarkSpeechModel
-from src.common.config import load_config
+from src.zero_shot.pantagruel_audio import PantagruelSpeechModel
+from src.zero_shot.pantagruel_audio_text import PantagruelSpeechTextAudioModel
 
 
 def load_encoder(model_id):
     if model_id.startswith("LeBenchmark/"):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         return LeBenchmarkSpeechModel(model_id, device=device)
+    if model_id.startswith("PantagrueLLM/Speech_Text"):
+        return PantagruelSpeechTextAudioModel(model_id)
     return PantagruelSpeechModel(model_id)
 
 
@@ -71,14 +64,16 @@ def extract(config, model_id, name):
 
     encoder = load_encoder(model_id)
 
-    embeddings, labels, durations, file_ids= [], [], [], []
+    embeddings, labels, durations, file_ids = [], [], [], []
 
     for _, row in df.iterrows():
         audio, sr = load_audio(row["path"])
         duration = len(audio) / sr
 
         embedding = encode_long_audio(
-            encoder, audio, sr,
+            encoder,
+            audio,
+            sr,
             chunk_sec=rha_cfg.get("chunk_sec", 30.0),
             step_sec=rha_cfg.get("step_sec", 15.0),
         )
@@ -96,7 +91,6 @@ def extract(config, model_id, name):
         labels.append(torch.from_numpy(label).float())
         durations.append(duration)
         file_ids.append(row["file_id"])
-    
 
     out_path = cache_dir / f"{name}_rhapsodie.pt"
     torch.save(
@@ -113,7 +107,9 @@ def extract(config, model_id, name):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", type=str, default="configs/config_finetuning.yaml")
+    parser.add_argument(
+        "--config", type=str, default="configs/config_finetuning.yaml"
+    )
     args = parser.parse_args()
     config = load_config(args.config)
 
