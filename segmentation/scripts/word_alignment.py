@@ -16,7 +16,7 @@ def build_utterance_segment(sentence, duration):
     return[{"start": 0, "end":duration,"text":sentence}]
 
 def align(segment,model,metadata, audio , device):
-    result = whisperx.align(segment,model,metadata,audio,device,return_char_alignements=False)
+    result = whisperx.align(segment,model,metadata,audio,device)
     
     #result["segments"] list of dict
     words =[]
@@ -24,7 +24,7 @@ def align(segment,model,metadata, audio , device):
         for w in s.get("words", []):
             if "start" not in w or "end" not in w :
                 continue 
-            words.append((w["word"],float(w("start")),float(w['end'])))
+            words.append((w["word"],float(w["start"]),float(w['end'])))
     return words 
 
 def process_split(config, split ,max_samples,  device):
@@ -41,7 +41,7 @@ def process_split(config, split ,max_samples,  device):
     for i , row in df.iterrows():
         audio, sr = load_audio(row["path"])
         duration = len(audio)/ sr
-        sentence = row["text"]
+        sentence = row["sentence"]
         try :
             segments = build_utterance_segment(sentence=sentence,duration=duration)
             words = align(segments,model,metadata,audio, device)
