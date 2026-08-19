@@ -27,7 +27,31 @@ class SegmentationData(Dataset):
         label = self.labels[index].float()
         duration = self.durations[index]
         return embedding , label, duration 
-    
+
+
+class SegmentationDataText(SegmentationData):
+    """
+    Same as SegmentationData, but also carries the frame-aligned text
+    stream produced by src.fine_tuning.text_alignment.align_text_to_frames.
+ 
+    Only used for encoders that support encode_text (currently the
+    Pantagruel Speech-Text variants). For any other encoder, keep using
+    the base SegmentationData + collate_fn, unchanged.
+ 
+    text_features : list of tensors (T_i, D), same T_i as the
+        corresponding embeddings[i], and same D (see extract_embeddings.py)
+    """
+ 
+    def __init__(self, embeddings, labels, durations, text_features):
+        super().__init__(embeddings, labels, durations)
+        if len(text_features) != len(embeddings):
+            raise ValueError("text_features must have the same size as embeddings")
+        self.text_features = text_features
+ 
+    def __getitem__(self, index):
+        embedding, label, duration = super().__getitem__(index)
+        text = self.text_features[index].float()
+        return embedding, label, duration, text
 
 def collate_fn(batch):
     
@@ -51,3 +75,26 @@ def collate_fn(batch):
         durations_tensor = torch.tensor(durations, dtype=torch.float32)
         
     return embeddings_pad, labels_pad, l, durations_tensor
+
+
+def collate_fn_text(batch):
+    """
+    Same batching logic as collate_fn, plus padding for the text stream.
+ 
+    Reuses collate_fn itself (rather than duplicating the padding logic)
+    by stripping the text element out, delegating to collate_fn for the
+    audio/label/duration part, then padding text_features the same way.
+    """
+    base_batch = [(emb, lab, dur) for emb, lab, dur, _ in batch]
+    embeddings_pad, labels_pad, l, durations_tensor = collate_fn(base_batch)
+ 
+    texts = [txt for _, _, _, txt in batch]
+    max_l = int(l.max().item())
+    dim = texts[0].shape[1]
+ 
+    text_pad = torch.zeros(len(batch), max_l, dim, dtype=torch.float32)
+    for j, txt in enumerate(texts):
+        sh = txt.shape[0]
+        text_pad[j, :sh, :] = txt
+ 
+    return embeddings_pad, labels_pad, l, durations_tensor, text_pad

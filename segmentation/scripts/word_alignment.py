@@ -49,7 +49,7 @@ def process_split(config, split ,max_samples,  device):
             print(f"align failed on {row['path']}: {e}")
             words=[]
         alignements[row["path"]]={"words":words,"duration":duration,"sentence":sentence}
-    out_path = cache_dir / f"{split}_word_alignemnt.pt"
+    out_path = cache_dir / f"{split}_word_alignment.pt"
     torch.save(alignements,out_path)
 
 def main():
