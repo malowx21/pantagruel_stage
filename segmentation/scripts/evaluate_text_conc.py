@@ -15,7 +15,7 @@ from pathlib import Path
 from scipy.signal import find_peaks
 
 from src.common.config import load_config
-from src.fine_tuning.head_segmentation_text import ProsodicSegmentationHeadText
+from src.fine_tuning.head_segmentation_text_conc import ProsodicSegmentationHeadText
 from src.fine_tuning.segmentation_dataset import (
     SegmentationData, SegmentationDataText, collate_fn, collate_fn_text,
 )
