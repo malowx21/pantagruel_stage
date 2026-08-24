@@ -1,9 +1,5 @@
 """
 Evaluate fine-tuned segmentation heads (audio + text, concatenation-based)
-on the test split. Mirrors train_text.py's conventions exactly:
-  - loads   *_test_text.pt   caches
-  - uses    ProsodicSegmentationHeadText
-  - expects checkpoints  best_segmentation_head_<enc>_seed<s>_text.pt
 """
 
 import torch

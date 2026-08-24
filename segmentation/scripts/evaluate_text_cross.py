@@ -1,9 +1,5 @@
 """
 Evaluate fine-tuned segmentation heads (audio + text) on the test split.
-Mirrors evaluate.py but:
-  - loads   *_test_text.pt  caches
-  - uses    ProsodicSegmentationHeadText
-  - expects checkpoints  best_segmentation_head_<enc>_seed<s>_text_cross.pt
 """
 
 import torch
