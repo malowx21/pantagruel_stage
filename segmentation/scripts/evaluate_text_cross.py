@@ -44,7 +44,7 @@ def get_checkpoint_paths(config, encoder_name):
     if existing:
         return existing
     # fallback: single-seed layout (seed 42 saved without seed suffix)
-    return [(None, checkpoints_dir / f"{base_name}_text.pt")]
+    return [(None, checkpoints_dir / f"{base_name}_text_cross.pt")]
 
 
 def build_loader(data, batch_size, num_workers):
