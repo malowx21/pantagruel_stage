@@ -1,5 +1,6 @@
-segmentation/data/raw/
+data/raw/
 
-segmentation/src/.env
+src/.env
 
 **/__pycache__
+*.pdf:Zone.Identifier
