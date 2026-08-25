@@ -1,76 +1,74 @@
-# Segmentation prosodique du français par représentations audio et textuelles
+# French Prosodic Segmentation with Audio and Text Representations
 
-Ce dépôt contient le pipeline expérimental développé pour comparer des
-représentations auto-supervisées françaises sur une tâche de détection de
-frontières prosodiques. Il couvre les encodeurs audio des familles
-**Pantagruel** et **LeBenchmark**, les encodeurs multimodaux
-**Pantagruel Speech-Text**, ainsi que deux mécanismes de guidage textuel :
+This repository contains the experimental pipeline developed to compare French
+self-supervised representations on a prosodic boundary detection task. It
+covers audio encoders from the **Pantagruel** and **LeBenchmark** families,
+the **Pantagruel Speech-Text** multimodal encoders, and two text guidance
+mechanisms:
 
-- concaténation directe des représentations audio et texte alignées ;
-- cross-attention, avec l'audio comme requête et le texte comme clé et valeur.
+- direct concatenation of aligned audio and text representations;
+- cross-attention, with audio as the query and text as the key and value.
 
-Les encodeurs sont gelés. Seule une tête de segmentation légère est entraînée
-sur Common Voice FR. La généralisation inter-corpus est ensuite mesurée sans
-réentraînement sur Rhapsodie, corpus de parole française annoté par des
-experts.
+The encoders are frozen. Only a lightweight segmentation head is trained on
+Common Voice FR. Cross-corpus generalization is then measured without
+retraining on Rhapsodie, an expert-annotated French speech corpus.
 
-> **Statut du projet :** prototype de recherche. Les chemins de données et les
-> listes d'encodeurs doivent être adaptés dans la configuration avant de lancer
-> une expérience.
+> **Project status:** research prototype. Data paths and encoder lists must be
+> adapted in the configuration before running an experiment.
 
-## Objectifs
+## Objectives
 
-Le projet vise à :
+The project aims to:
 
-1. comparer Pantagruel et LeBenchmark dans un protocole aval commun ;
-2. mesurer l'effet du pré-entraînement Speech-Text sur la branche audio ;
-3. déterminer si un texte explicitement fourni à la tête améliore le F1 ;
-4. vérifier si les classements obtenus sur Common Voice se transfèrent à de la
-   parole plus spontanée dans Rhapsodie ;
-5. rendre les conclusions plus robustes grâce à plusieurs seeds et à une
-   analyse des erreurs par fichier.
+1. compare Pantagruel and LeBenchmark under a common downstream protocol;
+2. measure the effect of Speech-Text pretraining on the audio branch;
+3. determine whether explicitly providing text to the head improves F1;
+4. check whether rankings obtained on Common Voice transfer to more
+   spontaneous speech in Rhapsodie;
+5. make conclusions more robust through multiple seeds and per-file error
+   analysis.
 
 ## Architectures
 
-### Audio seul
+### Audio only
 
 ```text
-audio -> encodeur gelé -> embeddings (T, D)
-      -> Conv1D -> BiLSTM -> MLP -> score de frontière par trame
+audio -> frozen encoder -> embeddings (T, D)
+      -> Conv1D -> BiLSTM -> MLP -> frame-level boundary score
 ```
 
-### Concaténation directe
+### Direct concatenation
 
 ```text
-audio -> embeddings audio alignés ----+
-                                        +-> concaténation -> Conv1D -> BiLSTM -> MLP
-texte -> embeddings de mots -> trames -+
+audio -> aligned audio embeddings --------+
+                                           +-> concatenation -> Conv1D -> BiLSTM -> MLP
+text -> word embeddings -> frames --------+
 ```
 
-Les vecteurs textuels sont répétés sur les trames temporelles couvertes par
-chaque mot, puis concaténés aux vecteurs audio. La dimension d'entrée de la
-tête passe ainsi de `D` à `2D`.
+Text vectors are repeated over the time frames covered by each word, then
+concatenated with the audio vectors. The head's input dimension therefore
+changes from `D` to `2D`.
 
 ### Cross-attention
 
 ```text
-Q = trames audio
-K = trames textuelles alignées
-V = trames textuelles alignées
+Q = audio frames
+K = aligned text frames
+V = aligned text frames
 
 audio + Attention(Q, K, V) -> Conv1D -> BiLSTM -> MLP
 ```
 
-La cross-attention permet à chaque trame audio de pondérer l'information
-textuelle pertinente. Sa projection de sortie est initialisée à zéro afin que
-l'entraînement commence près du comportement audio seul.
+Cross-attention allows each audio frame to weight the relevant textual
+information. Its output projection is initialized to zero so that training
+starts close to the audio-only behavior.
 
-Dans ces schémas, `T` désigne le nombre de trames temporelles et `D` la
-dimension d'une représentation. Le MLP final produit un logit par trame. Selon
-la configuration, l'apprentissage utilise une BCE avec logits ou une MSE, avec
-masquage des positions de padding.
+In these diagrams, `T` denotes the number of time frames and `D` the dimension
+of a representation. The final MLP produces one logit per frame. Depending on
+the configuration, training uses binary cross-entropy with logits or MSE, with
+padding positions masked.
 
-## Modèles comparés
+## Compared models
 
 - `Pantagruel-B-1K`
 - `Pantagruel-B-14K`
@@ -80,54 +78,54 @@ masquage des positions de padding.
 - `LeBenchmark-w2v-B-1k`
 - `LeBenchmark-w2v-L-7k`
 
-Les champs `encoder.name` et `encoder.model_id` de la configuration sont deux
-listes parallèles : ils doivent contenir le même nombre d'éléments et rester
-dans le même ordre.
+The `encoder.name` and `encoder.model_id` configuration fields are parallel
+lists: they must contain the same number of elements and remain in the same
+order.
 
-## Organisation du dépôt
+## Repository layout
 
 ```text
 configs/
-  config_finetuning.yaml              configuration principale
+  config_finetuning.yaml              main configuration
 
 scripts/
-  extract_embeddings.py               caches audio et pseudo-labels Common Voice
-  word_alignment.py                   alignement mot--audio avec WhisperX
-  extract_embeddings_speech_text.py   caches audio + texte aligné
-  train.py                             entraînement audio seul
-  train_text_conc.py                   entraînement par concaténation
-  train_text_cross.py                  entraînement par cross-attention
-  evaluate.py                          évaluation audio seul sur Common Voice
-  evaluate_text_conc.py                évaluation de la concaténation
-  evaluate_text_cross.py               évaluation de la cross-attention
-  analyze_errors.py                    analyse FP/FN des têtes audio
-  extract_embeddings_rhapsodie.py      création du cache Rhapsodie
-  evaluate_rhapsodie.py                transfert frozen/oracle vers Rhapsodie
+  extract_embeddings.py               caches audio and Common Voice pseudo-labels
+  word_alignment.py                   word-audio alignment with WhisperX
+  extract_embeddings_speech_text.py   audio + aligned text caches
+  train.py                            audio-only training
+  train_text_conc.py                 concatenation training
+  train_text_cross.py                cross-attention training
+  evaluate.py                         audio-only evaluation on Common Voice
+  evaluate_text_conc.py               concatenation evaluation
+  evaluate_text_cross.py              cross-attention evaluation
+  analyze_errors.py                  FP/FN analysis of audio heads
+  extract_embeddings_rhapsodie.py    creation of the Rhapsodie cache
+  evaluate_rhapsodie.py               frozen/oracle transfer to Rhapsodie
 
 src/
-  common/                              chargement, configuration et annotations
-  fine_tuning/                         jeux de données, têtes, labels et métriques
-  zero_shot/                           wrappers Pantagruel et LeBenchmark
-  old/                                 prototypes antérieurs conservés pour référence
+  common/                             loading, configuration, and annotations
+  fine_tuning/                        datasets, heads, labels, and metrics
+  zero_shot/                           Pantagruel and LeBenchmark wrappers
+  old/                                 previous prototypes kept for reference
 
-checkpoints/                           poids des têtes entraînées
-reports/                               rapports et résultats expérimentaux
-requirements.txt                      dépendances Python directes
-LICENSE                               licence du code
+checkpoints/                           trained head weights
+reports/                               experimental reports and results
+requirements.txt                      direct Python dependencies
+LICENSE                               code license
 ```
 
-Les données, caches d'embeddings et poids des encodeurs ne sont pas distribués
-avec ce dépôt.
+Data, embedding caches, and encoder weights are not distributed with this
+repository.
 
-## Prérequis
+## Requirements
 
-- Python 3.10 ou plus récent ;
-- `ffmpeg`, notamment pour le chargement des fichiers MP3 et WhisperX ;
-- suffisamment d'espace disque pour Common Voice, Rhapsodie et les caches ;
-- un GPU CUDA est vivement recommandé pour l'extraction et l'alignement, mais
-  les têtes peuvent aussi être exécutées sur CPU.
+- Python 3.10 or newer;
+- `ffmpeg`, especially for loading MP3 files and WhisperX;
+- enough disk space for Common Voice, Rhapsodie, and the caches;
+- a CUDA GPU is strongly recommended for extraction and alignment, but the
+  heads can also run on CPU.
 
-Pour Ubuntu ou Debian :
+For Ubuntu or Debian:
 
 ```bash
 sudo apt-get update
@@ -136,7 +134,7 @@ sudo apt-get install ffmpeg
 
 ## Installation
 
-Depuis le dossier `segmentation` :
+From the `segmentation` directory:
 
 ```bash
 python -m venv .venv
@@ -145,25 +143,25 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-Pour une machine CUDA, il peut être préférable d'installer d'abord PyTorch et
-Torchaudio avec la commande correspondant à la version CUDA de la machine,
-puis d'exécuter l'installation du fichier de dépendances.
+On a CUDA machine, it may be preferable to first install PyTorch and Torchaudio
+using the command corresponding to the machine's CUDA version, then install
+the dependencies from the requirements file.
 
-Certains modèles Pantagruel peuvent nécessiter une authentification Hugging
-Face. Créer dans ce cas un fichier `.env` non versionné à la racine :
+Some Pantagruel models may require Hugging Face authentication. In that case,
+create an untracked `.env` file at the repository root:
 
 ```dotenv
 HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxx
 ```
 
-Ne jamais publier ce jeton.
+Never publish this token.
 
-## Préparation des corpus
+## Corpus preparation
 
 ### Common Voice FR
 
-Le dossier indiqué par `data.common_voice_root` doit contenir les fichiers TSV
-de Common Voice et le dossier `clips/`. La configuration fournie utilise :
+The directory specified by `data.common_voice_root` must contain the Common
+Voice TSV files and the `clips/` directory. The provided configuration uses:
 
 ```text
 data/raw/cv-corpus-25.0-2026-03-09/fr/
@@ -173,13 +171,13 @@ data/raw/cv-corpus-25.0-2026-03-09/fr/
   clips/
 ```
 
-Le projet limite par défaut l'entraînement et la validation avec
-`max_samples_train` et `max_samples_valid`. Mettre ces valeurs à `null` pour
-parcourir l'intégralité des splits.
+By default, the project limits training and validation with
+`max_samples_train` and `max_samples_valid`. Set these values to `null` to use
+the complete splits.
 
 ### Rhapsodie
 
-Renseigner les chemins suivants dans `configs/config_finetuning.yaml` :
+Set the following paths in `configs/config_finetuning.yaml`:
 
 ```yaml
 rhapsodie:
@@ -189,29 +187,29 @@ rhapsodie:
   boundary_convention: pause_midpoint
 ```
 
-Les noms de base des fichiers audio et TextGrid doivent permettre leur
-appariement par le chargeur.
+The base names of the audio and TextGrid files must allow the loader to match
+them.
 
-## Configuration expérimentale
+## Experimental configuration
 
-Le fichier principal est `configs/config_finetuning.yaml`. Il contrôle :
+The main file is `configs/config_finetuning.yaml`. It controls:
 
-- les identifiants Hugging Face et la dimension des encodeurs ;
-- les chemins et limites des corpus ;
-- la construction des pseudo-labels gaussiens ;
-- les dimensions Conv1D, BiLSTM et le dropout ;
-- la fonction de perte, les learning rates et l'early stopping ;
-- les seeds ;
-- la tolérance temporelle et les paramètres de détection des pics ;
-- les conventions d'annotation Rhapsodie.
+- Hugging Face identifiers and encoder dimensions;
+- corpus paths and limits;
+- construction of Gaussian pseudo-labels;
+- Conv1D and BiLSTM dimensions and dropout;
+- the loss function, learning rates, and early stopping;
+- seeds;
+- temporal tolerance and peak detection parameters;
+- Rhapsodie annotation conventions.
 
-La configuration actuellement fournie sélectionne les deux modèles Speech-Text.
-Pour reproduire le benchmark audio, remplacer les listes actives par les
-identifiants audio présents dans les lignes commentées du même fichier.
+The currently provided configuration selects the two Speech-Text models. To
+reproduce the audio benchmark, replace the active lists with the audio
+identifiers in the commented lines of the same file.
 
-## Pipeline audio seul sur Common Voice
+## Audio-only pipeline on Common Voice
 
-### 1. Extraire les embeddings et créer les pseudo-labels
+### 1. Extract embeddings and create pseudo-labels
 
 ```bash
 python -m scripts.extract_embeddings --config configs/config_finetuning.yaml --split train
@@ -219,37 +217,37 @@ python -m scripts.extract_embeddings --config configs/config_finetuning.yaml --s
 python -m scripts.extract_embeddings --config configs/config_finetuning.yaml --split test
 ```
 
-Les sorties sont enregistrées sous la forme :
+Outputs are saved as:
 
 ```text
-data/cache/<nom_encodeur>_<nom_split_reel>.pt
+data/cache/<encoder_name>_<actual_split_name>.pt
 ```
 
-Le split CLI `valid` correspond par défaut au split Common Voice `dev` et
-produit donc un fichier suffixé par `_dev.pt`.
+The `valid` CLI split maps to the Common Voice `dev` split by default and thus
+produces a file with the `_dev.pt` suffix.
 
-### 2. Entraîner la tête audio
+### 2. Train the audio head
 
 ```bash
 python -m scripts.train --config configs/config_finetuning.yaml
 ```
 
-Pour imposer les initialisations depuis la ligne de commande :
+To specify the seeds from the command line:
 
 ```bash
 python -m scripts.train --config configs/config_finetuning.yaml --seeds 42 123 2024
 ```
 
-### 3. Évaluer
+### 3. Evaluate
 
 ```bash
 python -m scripts.evaluate --config configs/config_finetuning.yaml
 ```
 
-Le script affiche précision, rappel et F1 pour chaque checkpoint, puis leur
-moyenne et leur écart-type lorsque plusieurs seeds sont disponibles.
+The script displays precision, recall, and F1 for each checkpoint, followed by
+their mean and standard deviation when multiple seeds are available.
 
-### 4. Analyser les erreurs
+### 4. Analyze errors
 
 ```bash
 python -m scripts.analyze_errors \
@@ -259,15 +257,15 @@ python -m scripts.analyze_errors \
   --seed 42
 ```
 
-Le CSV produit contient les frontières prédites et de référence, les vrais
-positifs, faux positifs et faux négatifs de chaque extrait.
+The generated CSV contains predicted and reference boundaries, true positives,
+false positives, and false negatives for each excerpt.
 
-## Pipeline avec guidage textuel
+## Pipeline with text guidance
 
-Ce pipeline doit être exécuté avec un encodeur Pantagruel Speech-Text qui
-dispose de la méthode `encode_text`.
+This pipeline must be run with a Pantagruel Speech-Text encoder that provides
+the `encode_text` method.
 
-### 1. Aligner les mots sur l'audio
+### 1. Align words with audio
 
 ```bash
 python -m scripts.word_alignment --config configs/config_finetuning.yaml --split train
@@ -275,12 +273,11 @@ python -m scripts.word_alignment --config configs/config_finetuning.yaml --split
 python -m scripts.word_alignment --config configs/config_finetuning.yaml --split test
 ```
 
-WhisperX aligne la transcription Common Voice connue sur le signal. Les caches
-sont enregistrés dans `data/cache/word_alignement/`. Après toute modification
-de la logique d'alignement, ces fichiers doivent être régénérés avant de
-recréer les embeddings textuels.
+WhisperX aligns the known Common Voice transcription with the signal. Caches
+are saved in `data/cache/word_alignement/`. After any change to the alignment
+logic, these files must be regenerated before recreating the text embeddings.
 
-### 2. Extraire les représentations audio et textuelles
+### 2. Extract audio and text representations
 
 ```bash
 python -m scripts.extract_embeddings_speech_text --config configs/config_finetuning.yaml --split train
@@ -288,32 +285,32 @@ python -m scripts.extract_embeddings_speech_text --config configs/config_finetun
 python -m scripts.extract_embeddings_speech_text --config configs/config_finetuning.yaml --split test
 ```
 
-Chaque cache `<nom_encodeur>_<split>_text.pt` contient les embeddings audio,
-les pseudo-labels, les durées et `text_features`, de forme `(T, D)`.
+Each `<encoder_name>_<split>_text.pt` cache contains audio embeddings,
+pseudo-labels, durations, and `text_features` with shape `(T, D)`.
 
-### 3. Entraîner et évaluer la concaténation
+### 3. Train and evaluate concatenation
 
 ```bash
 python -m scripts.train_text_conc --config configs/config_finetuning.yaml --seeds 42 123 2024
 python -m scripts.evaluate_text_conc --config configs/config_finetuning.yaml
 ```
 
-### 4. Entraîner et évaluer la cross-attention
+### 4. Train and evaluate cross-attention
 
 ```bash
 python -m scripts.train_text_cross --config configs/config_finetuning.yaml --seeds 42 123 2024
 python -m scripts.evaluate_text_cross --config configs/config_finetuning.yaml
 ```
 
-Les deux méthodes utilisent des noms de checkpoints distincts :
-`_text_conc.pt` et `_text_cross.pt`. Elles peuvent ainsi être entraînées et
-comparées sans écraser les poids de l'autre architecture.
+The two methods use distinct checkpoint names: `_text_conc.pt` and
+`_text_cross.pt`. They can therefore be trained and compared without
+overwriting the weights of the other architecture.
 
-## Transfert vers Rhapsodie
+## Transfer to Rhapsodie
 
-Les commandes suivantes évaluent les têtes **audio seul**, y compris celles
-associées à un encodeur pré-entraîné Speech-Text. Le guidage textuel explicite
-sur Rhapsodie n'est pas implémenté dans ce script.
+The following commands evaluate **audio-only** heads, including those
+associated with a Speech-Text pretrained encoder. Explicit text guidance on
+Rhapsodie is not implemented in this script.
 
 ```bash
 python -m scripts.extract_embeddings_rhapsodie --config configs/config_finetuning.yaml
@@ -321,47 +318,42 @@ python -m scripts.evaluate_rhapsodie --config configs/config_finetuning.yaml --t
 python -m scripts.evaluate_rhapsodie --config configs/config_finetuning.yaml --threshold_mode oracle
 ```
 
-- `frozen` conserve la proéminence choisie sur Common Voice : c'est le vrai
-  transfert sans recalibration ;
-- `oracle` balaie plusieurs proéminences sur Rhapsodie et fournit une borne
-  supérieure exploratoire, pas un résultat zero-shot strict.
+- `frozen` keeps the threshold selected on Common Voice: this is the actual
+  transfer without recalibration;
+- `oracle` sweeps several thresholds on Rhapsodie and provides an exploratory
+  upper bound, not a strict zero-shot result.
 
-## Résultats principaux
+## Main results
 
-Les résultats complets sont détaillés dans `reports/`. Sur trois seeds :
+Full results are detailed in `reports/`. Across three seeds:
 
-- le meilleur F1 Common Voice audio est obtenu par
-  `LeBenchmark-w2v-L-7k` : `0,3773 ± 0,0025` ;
-- le meilleur Pantagruel sur Common Voice est
-  `Pantagruel-Speech-Text-B-1K` utilisé avec l'audio seul :
-  `0,3562 ± 0,0006` ;
-- le meilleur transfert frozen vers Rhapsodie est obtenu par
-  `Pantagruel-B-1K` : `0,4426 ± 0,0154` ;
-- ni la concaténation ni la cross-attention n'améliorent le F1 par rapport à
-  l'utilisation audio seule dans les expériences réalisées.
+- the best Common Voice audio F1 is achieved by `LeBenchmark-w2v-L-7k`:
+  `0.3773 +/- 0.0025`;
+- the best Pantagruel result on Common Voice is achieved by
+  `Pantagruel-Speech-Text-B-1K` used with audio only: `0.3562 +/- 0.0006`;
+- the best frozen transfer to Rhapsodie is achieved by `Pantagruel-B-1K`:
+  `0.4426 +/- 0.0154`;
+- neither concatenation nor cross-attention improves F1 over audio-only use
+  in the experiments conducted.
 
-Ces valeurs dépendent du protocole, des pseudo-labels, de la calibration des
-pics et des versions de caches utilisées. Elles ne constituent pas un
-classement général des encodeurs.
+These values depend on the protocol, pseudo-labels, peak calibration, and cache
+versions used. They do not constitute a general ranking of encoders.
 
-## Reproductibilité et points d'attention
+## Reproducibility and considerations
 
-- Utiliser les mêmes seeds, splits, limites d'échantillons et caches pour toute
-  comparaison.
-- Ne pas comparer un cache textuel régénéré avec des baselines construites à
-  partir d'un ancien alignement sans relancer les conditions concernées.
-- Common Voice fournit ici des pseudo-labels dérivés des pauses, et non une
-  annotation prosodique experte.
-- Le F1 oracle ne doit pas être présenté comme une performance de transfert
-  aveugle.
-- Les modèles Hugging Face chargés avec `trust_remote_code=True` exécutent du
-  code tiers : vérifier la source et, pour une expérience archivable, figer une
-  révision du modèle.
-- Les répertoires `src/old/` et certains scripts d'analyse textuelle sont des
-  artefacts historiques ; les entrées principales sont celles listées dans les
-  pipelines ci-dessus.
+- Use the same seeds, splits, sample limits, and caches for every comparison.
+- Do not compare a regenerated text cache with baselines built from an older
+  alignment without rerunning the affected conditions.
+- Common Voice provides pause-derived pseudo-labels here, not expert prosodic
+  annotations.
+- Oracle F1 must not be presented as blind transfer performance.
+- Hugging Face models loaded with `trust_remote_code=True` execute third-party
+  code: verify the source and, for an archivable experiment, pin a model
+  revision.
+- The `src/old/` directories and some text analysis scripts are historical
+  artifacts; the main entry points are those listed in the pipelines above.
 
-## Références
+## References
 
 - P.-H. Le et al., [*Pantagruel: Unified Self-Supervised Encoders for French
   Text and Speech*](https://aclanthology.org/2026.lrec-1.799/), LREC 2026.
@@ -373,10 +365,9 @@ classement général des encodeurs.
 - M. Bain et al., [*WhisperX: Time-Accurate Speech Transcription of Long-Form
   Audio*](https://arxiv.org/abs/2303.00747), Interspeech 2023.
 
-## Licence
+## License
 
-Le code propre à ce dépôt est distribué sous licence MIT ; voir
-[`LICENSE`](LICENSE). Cette licence ne couvre pas automatiquement Common Voice,
-Rhapsodie, les checkpoints téléchargés, les modèles Hugging Face ni les autres
-ressources tierces. Chaque ressource conserve ses propres conditions
-d'utilisation et de redistribution.
+The code specific to this repository is distributed under the MIT License; see
+[`LICENSE`](LICENSE). This license does not automatically cover Common Voice,
+Rhapsodie, downloaded checkpoints, Hugging Face models, or other third-party
+resources. Each resource retains its own terms of use and redistribution.
